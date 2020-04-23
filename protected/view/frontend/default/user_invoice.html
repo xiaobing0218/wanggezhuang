@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="hx_baseurl" content="<{$common.baseurl}>">
+<title>开票信息管理 - <{$GLOBALS.cfg.site_name}></title>
+<link rel="stylesheet" type="text/css" href="<{$common.theme}>/css/general.css" />
+<link rel="stylesheet" type="text/css" href="<{$common.theme}>/css/user.css" />
+<script type="text/javascript" src="<{$common.baseurl}>/public/script/jquery.js"></script>
+<script type="text/javascript" src="<{$common.theme}>/js/general.js"></script>
+  <script>
+    function onSubmit(btn) {
+      var $form = $('#invoice-form');
+      var cate = $('.tabs .act').data('cate');
+      $form.find('input[name=cate]').val(cate);
+      $form.find('span.vdsfielderr').remove();
+      if (cate === 1) {
+        $('#name-1').vdsFieldChecker({rules:{required:[true, '请输入公司名称/姓名']}});
+      } else if (cate === 2) {
+        $('#name').vdsFieldChecker({rules:{required:[true, '请输入公司名称']}});
+        $('#tax').vdsFieldChecker({rules:{required:[true, '输入税号']}});
+        $('#bank').vdsFieldChecker({rules:{required:[true, '输入开户行']}});
+        $('#account').vdsFieldChecker({rules:{required:[true, '输入银行账户']}});
+        $('#address').vdsFieldChecker({rules:{required:[true, '输入注册地址']}});
+        $('#tel').vdsFieldChecker({rules:{required:[true, '输入注册电话']}});
+      }
+      $form.vdsFormChecker({
+        beforeSubmit: function(){
+          $(btn).prop('disabled', true).text('正在提交...');
+        }
+      });
+    }
+    $(function () {
+      $('.tabs a').click(function () {
+        $(this).addClass('act').siblings().removeClass('act');
+        $('#type-content .type-'+$(this).data('cate')).show().siblings().hide();
+      })
+    })
+  </script>
+</head>
+<body style="background-color: #f8f8f8">
+<!-- 顶部开始 -->
+<{layout_topper common=$common}>
+<!-- 顶部结束 -->
+<!-- 头部开始 -->
+<{layout_header common=$common}>
+<!-- 头部结束 -->
+<div class="loc w1100">
+  <div><a href="<{url c='main' a='index'}>">首页</a><b>></b><font>开票信息管理</font></div>
+</div>
+<!-- 主体开始 -->
+<div class="container w1100 mt10">
+  <div class="module cut">
+    <!-- 左侧开始 -->
+    <div class="w180 fl cut">
+      <!-- 用户菜单开始 -->
+      <{layout_usermenu}>
+      <!-- 用户菜单结束 -->
+    </div>
+    <!-- 左侧结束 -->
+    <!-- 右侧开始 -->
+    <div class="w900 cut">
+      <div class="profile mcter">
+        <div class="tabs">
+          <a href="javascript:" data-cate="1" class="tab act">普通发票抬头</a>
+          <a href="javascript:" data-cate="2" class="tab">增值税专用发票资质</a>
+        </div>
+        <div class="form">
+          <p class="f12 c999 mt30">温馨提示：电子发票即电子增值税发票，是税局认可的有效凭证，其法律效力、基本用途及使用规定同纸质发票。</p>
+          <form method="post" action="<{url c='invoice' a='index' type='submit'}>" id="invoice-form">
+            <input type="hidden" name="cate">
+            <div id="type-content">
+              <div class="type-1">
+                <dl>
+                  <dt><label for="name-1">公司名称/姓名：</label></dt>
+                  <dd><input name="name" id="name-1" class="txt" type="text" placeholder="请输入公司名称/姓名" value="<{$invoice_info.name}>" /></dd>
+                </dl>
+                <dl>
+                  <dt><label for="tax-1">税号：</label></dt>
+                  <dd><input name="tax_id" id="tax-1" class="txt" placeholder="请输入税号" value="<{$invoice_info.tax_id}>"/></dd>
+                </dl>
+                <p style="text-align: right">根据最新增值税管理办法，如需企业抬头发票，请填写有效税号信息。</p>
+              </div>
+              <div class="type-2" style="display: none">
+                <dl>
+                  <dt><label for="name">公司名称：</label></dt>
+                  <dd><input name="company_name" id="name" class="txt" type="text" placeholder="请输入公司名称" value="<{$invoice_info.company_name}>" /></dd>
+                </dl>
+                <dl>
+                  <dt><label for="tax">税号：</label></dt>
+                  <dd><input name="vat_tax_id" id="tax" class="txt" placeholder="请输入税号" value="<{$invoice_info.vat_tax_id}>" /></dd>
+                </dl>
+                <p style="text-align: right">根据最新增值税管理办法，如需企业抬头发票，请填写有效税号信息。</p>
+                <dl>
+                  <dt><label for="bank">开户行：</label></dt>
+                  <dd><input name="bank_name" id="bank" class="txt" placeholder="请输入开户行" value="<{$invoice_info.bank_name}>" /></dd>
+                </dl>
+                <dl>
+                  <dt><label for="account">开户银行账号：</label></dt>
+                  <dd><input name="account_number" id="account" class="txt" type="tel" placeholder="请输入开户银行账号" value="<{$invoice_info.account_number}>" /></dd>
+                </dl>
+                <dl>
+                  <dt><label for="address">注册地址：</label></dt>
+                  <dd><input name="registered_address" id="address" class="txt" placeholder="请输入注册地址" value="<{$invoice_info.registered_address}>" /></dd>
+                </dl>
+                <dl>
+                  <dt><label for="tel">注册电话：</label></dt>
+                  <dd><input name="registration_call" id="tel" class="txt" maxlength="20" type="tel" placeholder="请输入注册电话" value="<{$invoice_info.registration_call}>" /></dd>
+                </dl>
+              </div>
+            </div>
+            <div class="profile-btn mt30">
+              <button type="button" class="sm-green" onclick="onSubmit(this)" style="width: 100%;height: 40px">保存</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- 右侧结束 -->
+  </div>
+</div>
+<!-- 主体结束 -->
+<div class="cl"></div>
+<!-- 页脚开始 -->
+<{layout_helper}>
+<{layout_footer}>
+<!-- 页脚结束 -->
+<script type="text/javascript" src="<{$common.baseurl}>/public/script/juicer.js"></script>
+</body>
+</html>

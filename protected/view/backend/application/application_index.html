@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<{include file='backend/lib/meta.html'}>
+<link rel="stylesheet" type="text/css" href="public/theme/backend/css/verydows.css" />
+<link rel="stylesheet" type="text/css" href="public/theme/backend/css/main.css" />
+<script type="text/javascript" src="public/script/jquery.js"></script>
+<script type="text/javascript" src="public/theme/backend/js/verydows.js"></script>
+<script type="text/javascript" src="public/theme/backend/js/list.js"></script>
+</head>
+<body>
+<div class="content">
+  <div class="loc"><h2><i class="icon"></i>申请入驻</h2></div>
+  <div class="box">
+    <{if !empty($results)}>
+    <div class="module mt5">
+      <form method="post" id="mulentform">
+        <table class="datalist">
+          <tr>
+            <th width="50" >编号</th>
+            <th width="150">申请人昵称</th>
+            <th width="150">公司名称</th>
+            <th width="150">公司法人</th>
+            <th width="150">联系方式</th>
+            <th class="ta-l">公司地址</th>
+            <th width="50">状态</th>
+            <th width="50">操作</th>
+          </tr>
+          <{foreach $results as $v}>
+          <tr>
+            <td width="50"><{$v.id}></td>
+            <td width="150"><{if ($v.user_id.nickname)}><{$v.user_id.nickname}><{else}>未设置<{/if}></td>
+            <td width="150"><{$v.company_name}></td>
+            <td width="150"><{$v.legal_name}></td>
+            <td width="150"><{$v.contact}></td>
+            <td class="ta-l"><{$v.address}></td>
+            <td width="50"><{if ($v.status==0)}>审核中<{/if}><{if ($v.status==1)}>通过审批<{/if}><{if ($v.status==2)}>审批驳回<{/if}></td>
+            <td><a class="blue" href="<{url m=$MOD c='application' a='show' id=$v.id}>"><{if ($v.status==0)}>审核<{else}>查看<{/if}></a></td>
+          </tr>
+          <{/foreach}>
+        </table>
+      </form>
+    </div>
+    <{if !empty($paging)}>
+    <div class="bom mt5"><{html_paging paging=$paging m=$MOD c='custom' a='index' class='paging'}></div>
+    <{/if}>
+    <{else}>
+    <div class="nors mt5">未找到相关数据记录...</div>
+    <{/if}>
+  </div>
+</div>
+</body>
+</html>

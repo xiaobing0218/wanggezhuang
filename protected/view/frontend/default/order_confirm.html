@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="hx_baseurl" content="<{$common.baseurl}>">
+<title>确认订单 - <{$GLOBALS.cfg.site_name}></title>
+<link rel="stylesheet" type="text/css" href="<{$common.theme}>/css/general.css" />
+<link rel="stylesheet" type="text/css" href="<{$common.theme}>/css/order.css" />
+<link rel="stylesheet" type="text/css" href="<{$common.theme}>/css/user.css" />
+<link rel="stylesheet" type="text/css" href="<{$common.theme}>/plugins/font-awesome-4.7.0/css/font-awesome.min.css" />
+<script type="text/javascript" src="<{$common.baseurl}>/public/script/jquery.js"></script>
+<script type="text/javascript" src="<{$common.theme}>/js/general.js"></script>
+<script type="text/javascript" src="<{$common.theme}>/js/consignee.js"></script>
+<script type="text/javascript" src="<{$common.theme}>/js/order.js"></script>
+<script type="text/javascript" src="/public/script/layer/layer.js"></script>
+<script type="text/javascript">
+var areaApi = "<{url c='api/area' a='children'}>" , freightApi = "<{url c='api/order' a='freight'}>";
+var inVoicePop = null;
+function showVoc () {
+  inVoicePop = layer.open({
+    type: 1,
+    title: '修改发票',
+    closeBtn: 1,
+    area: '500px',
+    shadeClose: false,
+    shade: ['.65','#000'],
+    content: $('#invoice').html()
+  });
+}
+$(function(){
+  var consigneeBox = $('#consignee-box');
+  //初始化运费
+  countFreight();
+  //初始化地区选择
+  getAreaSelect();
+  //当改变收件人触发
+  onChangeConsignee();
+  //当改变配送方式触发
+  onChangeShipping();
+  //新建收件人地址
+  $('#newadrbtn').on('click', function(){
+    $(this).hide();
+    consigneeBox.slideDown().find('span.vdsfielderr').remove();
+    consigneeBox.find('form input[name="id"]').val('');
+  });
+  //收件人表单保存按钮点击
+  consigneeBox.find('.consignee-btns button').eq(0).click(function(){
+    if(!checkConsigneeForm('consignee-form')) return false;
+    var form = consigneeBox.find('form'), saveBtn = $(this);
+    $.ajax({
+      type: 'post',
+      dataType: 'json',
+      url: "<{url c='api/consignee' a='save'}>",
+      data: form.serialize(),
+      beforeSend: function(){
+        saveBtn.removeClass('sm-blue').addClass('sm-gray').text('正在保存...').prop('disabled', true);
+      },
+      success: function(res){
+        saveBtn.removeClass('sm-gray').addClass('sm-blue').text('保 存').prop('disabled', false);
+        if(res.status == 'success'){
+          res.data.province = form.find('select[name="province"] option:selected').text();
+          res.data.city = form.find('select[name="city"] option:selected').text();
+          res.data.borough = form.find('select[name="borough"] option:selected').text();
+          var $ul = $('#consignee-list'), $li = juicer($('#consignee-row-tpl').html(), res.data);
+          if(consigneeBox.find('form input[name="id"]').val() != ''){
+            $ul.find('li.cur').replaceWith($li);
+          }else{
+            $ul.find('li.cur').removeClass('cur').find('input[type="radio"]').prop('checked', false);
+            $ul.prepend($li);
+            onChangeConsignee();
+          }
+          hideConsigneeBox();
+        }
+      }
+    });
+
+  });
+  //收件人表单取消按钮点击
+  consigneeBox.find('.consignee-btns button').eq(1).click(function(){
+    hideConsigneeBox();
+  });
+
+});
+
+function select_invoice(type) {
+  if(type == 1){
+    $('.type-1').show();
+    $('.type-2').hide();
+  }else{
+    $('.type-1').hide();
+    $('.type-2').show();
+  }
+}
+</script>
+</head>
+<body style="background-color: #f8f8f8">
+<!-- 顶部开始 -->
+<{layout_topper common=$common}>
+<{layout_header common=$common}>
+<!-- 主体开始 -->
+<div class="container w1100 mt30">
+  <!-- 收件地址开始 -->
+  <div class="consignee cut">
+    <div class="th">
+      <h2>收货地址</h2>
+    </div>
+    <div class="selection module">
+      <ul id="consignee-list">
+        <{if !empty($consignee_list)}>
+        <{foreach $consignee_list as $v}>
+        <{if $v@first == true}>
+        <li class="cur" data-json="<{$v.json}>">
+          <span class="c999 fr"><a onclick="editConsignee(this)">编辑此地址</a></span>
+          <label>
+            <input class="mr5" type="radio" name="csn_id" value="<{$v.id}>" checked="checked" />
+            <b class="mr10"><{$v.receiver}></b> <{$v.area.province}> <{$v.area.city}> <{$v.area.borough}> <{$v.address}> <font class="c666 ml10">(联系电话：<{$v.mobile}>)</font>
+          </label>
+        </li>
+        <{else}>
+        <li data-json="<{$v.json}>">
+          <span class="c999 fr"><a onclick="editConsignee(this)">编辑此地址</a></span>
+          <label>
+            <input class="mr5" type="radio" name="csn_id" value="<{$v.id}>" />
+            <b class="mr10"><{$v.receiver}></b> <{$v.area.province}> <{$v.area.city}> <{$v.area.borough}> <{$v.address}> <font class="c666 ml10">(联系电话：<{$v.mobile}>)</font>
+          </label>
+        </li>
+        <{/if}>
+        <{/foreach}>
+        <{/if}>
+      </ul>
+      <div class="add-btn"><button type="button" class="sm-blue" id="newadrbtn">+ 新建收件人地址</button></div>
+      <div class="consignee-form cut hide" id="consignee-box">
+        <form id="consignee-form">
+          <input type="hidden" name="id" value="" />
+          <dl><dt><label>收件人：</label></dt><dd><input name="receiver" type="text" class="w200 txt" /></dd></dl>
+          <dl>
+            <dt>收件地区：</dt>
+            <dd>
+              <select name="province" class="slt" id="areaslt-province" onchange="getAreaSelect('province')"><option value="">选择省份</option></select>
+              <select name="city" class="slt" id="areaslt-city" onchange="getAreaSelect('city')"><option value="">选择城市</option></select>
+              <select name="borough" class="slt" id="areaslt-borough"><option value="">选择区/县</option></select>
+            </dd>
+          </dl>
+          <dl><dt>详细地址：</dt><dd><input name="address" id="address" type="text" class="w400 txt" /></dd></dl>
+          <dl><dt>邮政编码：</dt><dd><input name="zip" type="text" class="w100 txt" /></dd></dl>
+          <dl><dt>手机：</dt><dd><input name="mobile" type="text" class="w200 txt" /></dd></dl>
+          <div class="consignee-btns mt10"><button type="button" class="sm-blue">保 存</button><span class="sep"></span><button type="reset" class="sm-gray">取 消</button></div>
+        </form>
+      </div>
+    </div>
+    <div class="th">
+      <h2>配送时间</h2>
+    </div>
+    <div class="selection module">
+      <label class="radio-box">
+        <input name="delivery" value="1" checked type="radio">
+        <span><i class="fa"></i> 不限送货时间：周一至周日</span>
+      </label>
+      <label class="radio-box">
+        <input name="delivery" value="2" type="radio">
+        <span><i class="fa"></i> 工作时间送货：周一至周五</span>
+      </label>
+      <label class="radio-box">
+        <input name="delivery" value="3" type="radio">
+        <span><i class="fa"></i> 双休日/假日送货：周六至周日</span>
+      </label>
+    </div>
+    <div class="th">
+      <h2>支付方式</h2>
+    </div>
+    <div id="payment_list" class="selection module">
+      <div class="selection module">
+        <{foreach $payment_method_list as $v}>
+          <{if $v.name == '货到付款'}>
+            <{if $user_info.is_vip == 1}>
+              <label class="radio-box">
+                <input name="payment_method" value="<{$v.id}>"
+                <{if $v@first == true}>
+                checked
+                <{/if}>
+                type="radio">
+                <span><{$v.name}></span>
+              </label>
+            <{/if}>
+          <{/if}>
+          <{if $v.name != '货到付款'}>
+            <label class="radio-box">
+              <input name="payment_method" value="<{$v.id}>"
+              <{if $v@first == true}>
+              checked
+              <{/if}>
+              type="radio">
+              <span><{$v.name}></span>
+            </label>
+          <{/if}>
+        <{/foreach}>
+      </div>
+    </div>
+    <div class="th">
+      <h2>发票信息</h2>
+    </div>
+    <div id="invoice_list" class="selection module">
+<!--      <label class="radio-box check-box">-->
+<!--        <input name="invoice" value="1" type="checkbox">-->
+<!--        <span>-->
+<!--          <i class="fa check-item checked"></i>-->
+<!--          <i class="fa check-item"></i>-->
+<!--          <span>我需要发票</span>-->
+<!--        </span>-->
+<!--      </label>-->
+
+
+      <label class="radio-box">
+        <input name="invoice_type" value="1" checked type="radio">
+        <span>不开发票</span>
+      </label>
+      <{if $invoice_info['name']}>
+      <label class="radio-box">
+        <input name="invoice_type" value="2" type="radio">
+        <span>普通发票</span>
+      </label>
+      <{/if}>
+      <{if $invoice_info['company_name']}>
+      <label class="radio-box">
+        <input name="invoice_type" value="3" type="radio">
+        <span>增值税发票</span>
+      </label>
+      <{/if}>
+<!--      <a href="javascript:" onclick="showVoc()" class="f14">修改发票</a>-->
+      <{if $invoice_info}>
+      <a href="<{url c='invoice' a='index'}>" target="_blank" class="f14">修改发票</a>
+      <{else}>
+      <a href="<{url c='invoice' a='index'}>" target="_blank" class="f14">添加发票</a>
+      <{/if}>
+
+    </div>
+    <!-- 商品信息开始 -->
+    <div class="th">
+      <h2>商品信息</h2>
+    </div>
+    <{ foreach $cart.list as $k1=>$v1}>
+    <div class="nameBox">
+      <img class="lg-prc" src="/<{$v1.logo}>" alt="">
+      <div class="lg-name"><{$v1.abbreviation}></div>
+    </div>
+    <div class="parcel cart odmod">
+      <div class="module">
+        <table width="100%" border="0" cellpadding="0" cellspacing="0">
+          <tr>
+            <th colspan="2">商品</th>
+            <th width="200">价格(元)</th>
+            <th width="200">数量</th>
+            <th width="200">小计(元)</th>
+          </tr>
+
+          <{foreach $v1['commodity'] as $k => $v}>
+          <tr>
+            <td width="80"><a href="<{url c='goods' a='index' id=$v.goods_id}>" target="_blank"><img class="gim" src="<{$common.baseurl}>/upload/goods/prime/50x50/<{$v.goods_image}>" /></a></td>
+            <td>
+              <div class="aln-l">
+                <a href="<{url c='goods' a='index' id=$v.goods_id}>" target="_blank"><{$v.goods_name}></a>
+                <{if !empty($v.opts)}>
+                <p class="opts c999 mt5"><{foreach $v.opts as $vv}><span class="mr5">[<{$vv.type}>: <font class="c666"><{$vv.opt_text}></font>]</span><{/foreach}></p>
+                <{/if}>
+              </div>
+            </td>
+            <td><font class="unit-price"><{$v.now_price}></font></td>
+            <td><{$v.qty}></td>
+            <td><{$v.subtotal}></td>
+          </tr>
+          <{/foreach}>
+
+        </table>
+      </div>
+      <{/foreach}>
+      <div class="parcel-form module">
+        <table width="100%" border="0" cellpadding="0" cellspacing="0">
+          <tr>
+            <td class="aln-r" width="70"><b>留言备注：</b></td>
+            <td class="aln-l"><textarea id="memos" cols="58" rows="3" placeholder="选填：内容不能超过240个字符"></textarea></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <div class="th">
+      <h2>配送方式</h2>
+    </div>
+    <div id="shipping_list" class="selection module">
+      <{foreach $shipping_method_list as $v}>
+      <label class="radio-box">
+        <input name="shipping_method" value="<{$v.id}>"
+        <{if $v@first == true}>
+        checked
+        <{/if}>
+        type="radio">
+        <span><{$v.name}></span>
+      </label>
+      <{/foreach}>
+    </div>
+  </div>
+  <!-- 费用总计开始 -->
+  <div class="total mt10 cut">
+    <div class="th"><h2>订单合计</h2></div>
+    <div class="module mt10 cut">
+      <dl>
+        <dt>商品合计：</dt>
+        <dd><i>¥</i><font id="goods_amount"><{$cart.amount}></font></dd>
+      </dl>
+      <dl>
+        <dt>运费合计：</dt>
+        <dd><i>¥</i><font id="shipping_amount">0.00</font></dd>
+      </dl>
+      <dl>
+        <dt>应付款金额总计：</dt>
+        <dd class="count"><i>¥</i><font id="order_amount"><{$cart.amount}></font></dd>
+      </dl>
+    </div>
+  </div>
+  <!-- 费用总计结束 -->
+  <input type="hidden" name="hidden_name" data-error="请填写普通发票信息！" value="<{$invoice_info.name}>" />
+  <input type="hidden" name="hidden_company_name" data-error="请填写增值税发票信息！" value="<{$invoice_info.company_name}>" />
+  <form method="post" id="order-form" action="<{url c='order' a='submit'}>">
+    <input type="hidden" name="csn_id" data-error="请选择一个收件人地址！" />
+    <input type="hidden" name="shipping_id" data-error="请选择一个配送方式！" />
+    <input type="hidden" name="payment_id" data-error="请选择一个支付方式！" />
+    <input type="hidden" name="invoice_id" data-error="请选择一个发票类型！" />
+    <input type="hidden" name="memos" />
+    <div class="aln-c mt20"><a class="checkout-btn" onclick="submitOrder()">确认并提交订单</a></div>
+  </form>
+</div>
+<template class="hide" id="invoice">
+  <div class="profile">
+    <div class="form">
+      <p class="f12 c999 mt30">温馨提示：电子发票即电子增值税发票，是税局认可的有效凭证，其法律效力、基本用途及使用规定同纸质发票。</p>
+      <form method="post" action="<{url c='invoice' a='add' type='submit'}>" id="custom-form">
+        <dl>
+          <dt>发票类型：</dt>
+          <dd>
+            <label class="radio-label">
+              <input onclick="select_invoice(1)" name="type" type="radio" value="1" checked/><span>增值税普通发票</span>
+            </label>
+            <label class="radio-label">
+              <input onclick="select_invoice(2)" name="type" type="radio" value="2"/><span>增值税专用发票</span>
+            </label>
+          </dd>
+        </dl>
+        <div class="type-1">
+          <dl>
+            <dt><label for="name">公司名称/姓名：</label></dt>
+            <dd><input readonly name="name" id="name" class="txt" type="text" placeholder="请输入公司名称/姓名" value="<{$invoice_info.name}>" /></dd>
+          </dl>
+          <dl>
+            <dt><label for="tax_id">税号：</label></dt>
+            <dd><input readonly name="tax_id" id="tax_id" class="txt" placeholder="请输入税号" value="<{$invoice_info.tax_id}>" /></dd>
+          </dl>
+        </div>
+        <div class="type-2" style="display: none">
+          <dl>
+            <dt><label for="company_name">公司名称：</label></dt>
+            <dd><input readonly name="company_name" id="company_name" class="txt" type="text" placeholder="请输入公司名称" value="<{$invoice_info.company_name}>" />
+            </dd>
+          </dl>
+          <dl>
+            <dt><label for="vat_tax_id">税号：</label></dt>
+            <dd><input readonly name="vat_tax_id" id="vat_tax_id" class="txt" placeholder="请输入税号" value="<{$invoice_info.vat_tax_id}>" /></dd>
+          </dl>
+          <dl>
+            <dt><label for="bank_name">开户行：</label></dt>
+            <dd><input readonly name="bank_name" id="bank_name" class="txt" placeholder="请输入开户行" value="<{$invoice_info.bank_name}>" /></dd>
+          </dl>
+          <dl>
+            <dt><label for="account_number">账号：</label></dt>
+            <dd><input readonly name="account_number" id="account_number" class="txt" type="tel" placeholder="请输入账号" value="<{$invoice_info.account_number}>" />
+            </dd>
+          </dl>
+          <dl>
+            <dt><label for="registered_address">地址：</label></dt>
+            <dd><input readonly name="registered_address" id="registered_address" class="txt" placeholder="请输入地址" value="<{$invoice_info.registered_address}>" /></dd>
+          </dl>
+          <dl>
+            <dt><label for="registration_call">电话：</label></dt>
+            <dd><input readonly name="registration_call" id="registration_call" class="txt" maxlength="20" type="tel" value="<{$invoice_info.registration_call}>"
+                       placeholder="请输入电话"/></dd>
+          </dl>
+        </div>
+        <div class="profile-btn mt30">
+          <a type="button" class="sm-green" href="<{url c='invoice' a='index'}>" target="_blank">前往修改</a>
+          <button type="button" class="sm-gray" onclick="layer.close(inVoicePop)">取消</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</template>
+<!-- 主体结束 -->
+<div class="cl"></div>
+<!-- 页脚开始 -->
+<{layout_helper}>
+<{layout_footer}>
+<!-- 页脚结束 -->
+<script type="text/template" id="consignee-row-tpl">
+<li class="cur">
+  <span class="c999 fr"><a onclick="editConsignee(this)">编辑此地址</a></span>
+  <label>
+    <input class="mr5" type="radio" name="csn_id" value="${id}" checked="checked" />
+    <b class="mr10">${receiver}</b>${province} ${city} ${borough} ${address}
+    <font class="c666 ml10">(联系电话：${mobile})</font>
+  </label>
+</li>
+</script>
+<script type="text/javascript" src="<{$common.baseurl}>/public/script/juicer.js"></script>
+</body>
+</html>

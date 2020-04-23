@@ -1,0 +1,230 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<{include file='mobile/default/lib/meta.html'}>
+<meta name="keywords" content="用户注册" />
+<meta name="description" content="用户注册" />
+<title>用户注册 - <{$GLOBALS.cfg.site_name}></title>
+<link rel="stylesheet" type="text/css" href="<{$common.theme}>/css/general.css" />
+<link rel="stylesheet" type="text/css" href="<{$common.theme}>/iconfont/iconfont.css">
+<link rel="stylesheet" type="text/css" href="<{$common.theme}>/css/login.css" />
+<script type="text/javascript">
+$(function(){
+  $('#reg-btn').on('click', function(){
+    register();
+  });
+  $('#agreement').on('click', function(){
+    if(!$(this).prop('checked')){
+      $('#reg-btn').addClass('disabled').off('click');
+    }else{
+      $('#reg-btn').removeClass('disabled').on('click', function(){register();});
+    }
+  });
+});
+
+$(function(){
+    $("#a").click(function () {
+        $("#modal").show();
+    })
+    $("#m_btn").click(function() {
+        $("#modal").hide();
+    })
+    $("#modal").click(function () {
+        $("#modal").hide();
+    })
+    $("#content").click(function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+    })
+})
+function register(){
+    $('#username').vdsFieldChecker({rules: {required: [true, '请输入用户名']}});
+    $('#mobile').vdsFieldChecker({rules: {required: [true, '请输入手机号'], mobile: [true, '手机号无效']}});
+   // $('#captcha').vdsFieldChecker({rules: {required: [true, '请输入手机验证码']}});
+  $('#password').vdsFieldChecker({rules: {password:[true, '密码不符合要求，可包含字母、数字或特殊符号，长度须为6~32个字符']}});
+  $('#repassword').vdsFieldChecker({rules: {equal:[$('#password').val(), '两次密码不一致']}});
+  if($('#reg-form').vdsFormChecker({isSubmit:false}) == true){
+      var dataset = {
+          username: $('#username').val(),
+          mobile: $('#mobile').val(),
+          password: $('#password').val(),
+          repassword: $('#repassword').val(),
+          // captcha: $('#captcha').val()
+      };
+    $.asynInter("<{url c='api/user' a='register'}>", dataset, function(res){
+      if(res.errcode == 0){
+        $.vdsPrompt({
+          content: '注册完成! 请牢记您的用户名和密码',
+          clicked: function(){window.location.href = "<{url c='mobile/user' a='index'}>";}
+        });
+      }else{
+        $.vdsPrompt({content:res.errmsg});
+        return false;
+      }
+    });
+  }
+}
+
+$(function () {
+  var $code = $('#getCode');
+  $code.click(function () {
+      var mobile = $('#mobile').val();
+      var url = "<{url c='user' a='get_captcha'}>";
+      var data = {
+          'phone': mobile,
+          'type': 1
+      };
+      $.post(url, data, function (r) {
+          if (r.errcode == 0) {
+              cutDownStart(59)
+          } else {
+              $.alert(r.errmsg);
+          }
+      }, 'json');
+  });
+  function cutDownStart(timer) {
+    var $code =  $('#getCode');
+    var t = null;
+    $code.attr('disabled', true);
+    cutDown(timer);
+    function cutDown(timer) {
+      $code.text(timer + 's后重试');
+      clearTimeout(t);
+      if(timer <= 0) {
+        $code.removeAttr('disabled').text('获取验证码');
+        return
+      }
+      t = setTimeout(function () {
+        cutDown(timer - 1)
+      }, 1000)
+    }
+  }
+})
+</script>
+</head>
+<body>
+<div class="wrapper">
+  <!-- header start -->
+  <div class="header">
+    <div class="op lt"><a href="javascript:history.back(-1);"><i class="f20 iconfont">&#xe602;</i></a></div>
+    <h2>注册新用户</h2>
+  </div>
+  <!-- header end -->
+  <form id="reg-form">
+      <div class="login-form">
+          <div class="inputs">
+              <label class="form-item">
+                  <span class="icon fa"></span>
+                  <input type="text" class="input" name="username" maxlength="25" id="username" placeholder="设置用户名" required >
+              </label>
+              <label class="form-item">
+                  <span class="icon fa" style="font-size: 20px"></span>
+                  <input type="tel" class="input" name="mobile" maxlength="11" id="mobile" placeholder="请输入手机号"
+                         required>
+              </label>
+             <!--  <div class="form-item" style="padding-right: 110px">
+                  <span class="icon fa" style="font-size: 14px"></span>
+                  <input type="tel" class="input" maxlength="6" name="captcha" id="captcha" placeholder="请输入验证码"
+                         required>
+                  <button type="button" class="btn" id="getCode">获取验证码</button>
+              </div> -->
+              <label class="form-item">
+                  <span class="icon fa"></span>
+                  <input type="password" class="input" maxlength="25" name="password" id="password" placeholder="设置登录密码" required >
+              </label>
+              <label class="form-item">
+                  <span class="icon fa"></span>
+                  <input type="password" class="input" maxlength="25" name="repassword" id="repassword"
+                         placeholder="设置确认登录密码" required>
+              </label>
+          </div>
+          <div style="display: flex;align-items: center">
+              <label for="weuiAgree" class="weui-agree mt20">
+                  <input id="weuiAgree" checked type="checkbox" class="weui-agree__checkbox">
+                  <span class="weui-agree__text">阅读并同意</span>
+              </label>
+              <a style="margin-top: 20px;color: #0BAFFF;" href="javascript:void(0);" id="a">《用户服务协议》</a>
+          </div>
+          <div class="weui-btn-area">
+              <a class="weui-btn weui-btn_primary" id="reg-btn">注册</a>
+          </div>
+          <div class="mt20 center c999 f14">已有账号？<a class="blue" href="<{url c='mobile/user' a='login'}>">直接登录</a></div>
+      </div>
+
+    <!--<div class="weui-cells weui-cells_form f16">
+      <div class="weui-cell">
+        <div class="weui-cell__hd"><i class="fa label-icon"></i></div>
+        <div class="weui-cell__bd">
+          <input class="weui-input" type="text" placeholder="设置用户名">
+        </div>
+      </div>
+      <div class="weui-cell">
+        <div class="weui-cell__hd"><i class="fa label-icon" style="font-size: 24px"></i></div>
+        <div class="weui-cell__bd">
+          <input class="weui-input" type="tel" placeholder="请输入手机号">
+        </div>
+      </div>
+      <div class="weui-cell weui-cell_vcode">
+        <div class="weui-cell__hd">
+          <i class="fa label-icon"></i>
+        </div>
+        <div class="weui-cell__bd">
+          <input class="weui-input" type="tel" placeholder="请输入验证码">
+        </div>
+        <div class="weui-cell__ft">
+          <button type="button" class="weui-vcode-btn">获取验证码</button>
+        </div>
+      </div>
+      <div class="weui-cell">
+        <div class="weui-cell__hd"><i class="fa label-icon"></i></div>
+        <div class="weui-cell__bd">
+          <input class="weui-input" type="password" placeholder="设置登录密码">
+        </div>
+      </div>
+      <label for="weuiAgree" class="weui-agree mt20">
+        <input id="weuiAgree" checked type="checkbox" class="weui-agree__checkbox">
+        <span class="weui-agree__text">
+        阅读并同意<a href="javascript:void(0);">《用户服务协议》</a>
+      </span>
+      </label>
+      <div class="weui-btn-area">
+        <a class="weui-btn weui-btn_primary">注册</a>
+      </div>
+      <div class="mt20 center c999 f14">已有账号？<a class="blue" href="<{url c='mobile/user' a='login'}>">直接登录</a></div>
+      <div class="mt30"></div>
+    </div>-->
+  <!--<div class="eform">
+    <div class="tr puff"><input class="field" type="text" name="username" id="username" placeholder="设置用户名" /></div>
+    <div class="tr puff mt10"><input class="field" type="email" name="email" id="email" placeholder="设置邮箱" /></div>
+    <div class="tr puff mt10"><input class="field" type="password" name="password" id="password" placeholder="设置登录密码" /><i class="vineyebtn iconfont">&#xe66e;</i></div>
+    <div class="tr puff mt10"><input class="field" type="password" name="repassword" id="repassword" placeholder="确认登录密码" /><i class="vineyebtn iconfont">&#xe66e;</i></div>
+    <{if !empty($GLOBALS.cfg.captcha_user_register)}>
+    <div class="captcha puff tr mt10" id="captcha">
+      <a class="fr"><img onclick="resetCaptcha(this)" src="<{url c='api/captcha' a='image'}>" /></a>
+      <input class="field" type="text" placeholder="请输入图形验证码" />
+    </div>
+    <{/if}>
+    <div class="slck mt10 cut">
+      <div class="fl c888 f14">同意用户注册协议</div>
+      <div class="fr"><input class="vswitch-1" name="agreement" id="agreement" type="checkbox" checked="checked" value="1" /><label for="agreement"></label></div>
+    </div>
+    <div class="submit mt20"><a href="javascript:void(0)" id="reg-btn">注 册</a></div>
+    <div class="mt20 center c999">已有账号？<a class="blue" href="<{url c='mobile/user' a='login'}>">直接登录</a></div>
+  </div>-->
+  </form>
+</div>
+<{include file='mobile/default/lib/footer.html'}>
+<div class="modal" id="modal">
+    <div class="d_center">
+        <div class="m_title"><{$help.title}></div>
+        <div class="zz"></div>
+        <div class="content_txt" id="content">
+            <{$help.content nofilter}>
+        </div>
+        <div class="m_foot">
+            <div class="m_btn" id="m_btn">确定</div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="hx_baseurl" content="{$title}">
+<meta name="keywords" content="{$title}" />
+<meta name="description" content="{$title}" />
+<title><{$title}> - <{$GLOBALS.cfg.site_name}></title>
+<link rel="stylesheet" type="text/css" href="<{$common.theme}>/css/general.css" />
+<link rel="stylesheet" type="text/css" href="<{$common.theme}>/css/category.css" />
+  <link rel="stylesheet" type="text/css" href="<{$common.theme}>/plugins/font-awesome-4.7.0/css/font-awesome.min.css" />
+<script type="text/javascript" src="<{$common.baseurl}>/public/script/jquery.js"></script>
+<script type="text/javascript" src="<{$common.theme}>/js/general.js"></script>
+</head>
+<body class="bg-f8">
+<!-- 顶部开始 -->
+<{layout_topper common=$common}>
+<!-- 顶部结束 -->
+<!-- 头部开始 -->
+<{layout_header common=$common}>
+<!-- 头部结束 -->
+<div class="loc w1100">
+  <div>
+    <a href="<{url c='main' a='index'}>">首页</a>
+    <b>&gt;</b>
+    <{$title}>
+  </div>
+</div>
+<!-- 主体开始 -->
+<div class="container w1100 mt10">
+  <div class="module cut">
+    <!-- 过滤筛选开始 -->
+    <div class="filter cut">
+      <form action="<{url c='goods' a=$a}>" method="get">
+      <div class="ftitem cut">
+        <h5 class="fl">查询：</h5>
+        <div class="search-name fl">
+          <input name="kw" value="<{$u.kw}>" type="text" placeholder="请输入产品名称">
+        </div>
+        <h5 class="fl">价格区间：</h5>
+        <div class="search-price fl">
+          <input name="minpri" class="price-input fl" value="<{$u.minpri?:''}>" type="text" placeholder="请输入价格">
+          <div class="fl">~</div>
+          <input name="maxpri" class="price-input fl" value="<{$u.maxpri?:''}>" type="text" placeholder="请输入价格">
+        </div>
+        <button type="submit" class="search fl">查询 <i class="fa fa-search"></i></button>
+      </div>
+      </form>
+    </div>
+    <!-- 过滤筛选结束 -->
+    <!-- 商品列表开始 -->
+    <{if !empty($goods_list)}>
+    <div class="module mt10 goods-list">
+      <div class="display cut">
+        <div class="seq fl cut">
+          <ul class="fl">
+            <{if $u.sort == 0}>
+            <li class="cur"><a>默认排序</a></li>
+            <{else}>
+            <li><a href="<{url c='goods' a=$a kw=$u.kw minpri=$u.minpri maxpri=$u.maxpri sort='0'}>">默认排序</a></li>
+            <{/if}>
+            <{if $u.sort == 1}>
+            <li class="cur"><a href="<{url c='goods' a=$a kw=$u.kw minpri=$u.minpri maxpri=$u.maxpri sort='2'}>">价格<i class="up icon"></i></a></li>
+            <{elseif $u.sort == 2}>
+            <li class="cur"><a href="<{url c='goods' a=$a kw=$u.kw minpri=$u.minpri maxpri=$u.maxpri sort='1'}>">价格<i class="dw icon"></i></a></li>
+            <{else}>
+            <li><a href="<{url c='goods' a=$a kw=$u.kw minpri=$u.minpri maxpri=$u.maxpri sort='2'}>">价格<i class="up icon"></i></a></li>
+            <{/if}>
+            <{if $u.sort == 3}>
+            <li class="cur"><a href="<{url c='goods' a=$a kw=$u.kw minpri=$u.minpri maxpri=$u.maxpri sort='4'}>">上架时间<i class="dw icon"></i></a></li>
+            <{elseif $u.sort == 4}>
+            <li class="cur"><a href="<{url c='goods' a=$a kw=$u.kw minpri=$u.minpri maxpri=$u.maxpri sort='3'}>">上架时间<i class="up icon"></i></a></li>
+            <{else}>
+            <li><a href="<{url c='goods' a=$a kw=$u.kw minpri=$u.minpri maxpri=$u.maxpri sort='3'}>">上架时间<i class="dw icon"></i></a></li>
+            <{/if}>
+          </ul>
+        </div>
+        <div class="spt fr cut">
+          <ul>
+            <{if !empty($goods_paging)}>
+            <li class="sum c999">共<b class="red"><{$goods_paging.total_count}></b>件商品</li>
+            <li class="flip">
+              <{if $goods_paging.current_page == $goods_paging.first_page}>
+              <font>&lt;</font>
+              <{else}>
+              <a href="<{url c='category' a='index' kw=$u.kw minpri=$u.minpri maxpri=$u.maxpri sort=$u.sort page=$goods_paging.prev_page}>">&lt;</a>
+              <{/if}>
+              <span><b class="red"><{$goods_paging.current_page}></b> / <{$goods_paging.total_page}></span>
+              <{if $goods_paging.current_page == $goods_paging.last_page}>
+              <font>&gt;</font>
+              <{else}>
+              <a href="<{url c='category' a='index' kw=$u.kw minpri=$u.minpri maxpri=$u.maxpri sort=$u.sort page=$goods_paging.next_page}>">&gt;</a>
+              <{/if}>
+            </li>
+            <{else}>
+            <li class="sum c999">共<b class="red"><{count($goods_list)}></b>件商品</li>
+            <li class="flip"><font>&lt;</font><span class="c999">1 / 1</span><font>&gt;</font></li>
+            <{/if}>
+          </ul>
+        </div>
+      </div>
+      <div class="gli cut">
+        <ul>
+          <{foreach $goods_list as $v}>
+          <li>
+            <div class="im">
+              <a href="<{url c='goods' a='index' id=$v.goods_id}>">
+                <img alt="<{$v.goods_name}>" src="<{$common.baseurl}>/upload/goods/prime/150x150/<{$v.goods_image}>" />
+              </a>
+              <{if $v.merchant_id.user_id==12}>
+              <div class="ziy">自营</div>
+              <{/if}>
+            </div>
+            <h3><a title="<{$v.goods_name}>" href="<{url c='goods' a='index' id=$v.goods_id}>"><{truncate($v.goods_name, 40)}></a></h3>
+            <h4 class="shop"><a href="<{url c='goods' a='shop' id=$v.merchant_id.user_id}>"><{$v.merchant_id.abbreviation}></a></h4>
+            <p class="price"><i>¥</i> <{$v.now_price}></p>
+          </li>
+          <{/foreach}>
+        </ul>
+      </div>
+      <!-- 页码开始 -->
+      <div class="module aln-c mt20">
+        <{layout_paging paging=$goods_paging class='paging' c='goods' a=$a kw=$u.kw minpri=$u.minpri maxpri=$u.maxpri sort=$u.sort}>
+      </div>
+      <!-- 页码结束 -->
+    </div>
+    <{else}>
+    <div class="nors mt10 pad10 aln-c c999">抱歉！未找到匹配的商品数据...</div>
+    <{/if}>
+    <!-- 商品列表结束 -->
+  </div>
+</div>
+<!-- 主体结束 -->
+<div class="cl"></div>
+<!-- 页脚开始 -->
+<{layout_helper}>
+<{layout_footer}>
+<!-- 页脚结束 -->
+<script type="text/javascript" src="<{$common.baseurl}>/public/script/juicer.js"></script>
+</body>
+</html>

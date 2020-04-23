@@ -1,0 +1,148 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<{include file='mobile/default/lib/meta.html'}>
+<title>在线客服 - <{$GLOBALS.cfg.site_name}></title>
+<link rel="stylesheet" type="text/css" href="<{$common.theme}>/css/general.css" />
+<link rel="stylesheet" type="text/css" href="<{$common.theme}>/iconfont/iconfont.css">
+<!--<link rel="stylesheet" type="text/css" href="<{$common.theme}>/css/user.css" />-->
+  <style>
+    html,body,.wrapper{
+      height: 100%;
+      box-sizing: border-box;
+    }
+    .wrapper{
+      overflow: hidden;
+      position: relative;
+    }
+    .wrapper > .header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+    }
+    .chat-footer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 50px;
+      background: #fff;
+      display: flex;
+      padding: 8px 15px;
+      box-sizing: border-box;
+    }
+    .text-input {
+      border: 0;
+      width: 100%;
+      flex: 1 1 auto;
+      outline: none;
+      padding-right: 8px;
+    }
+    .send{
+      outline: none;
+      flex: 0 0 auto;
+      width: 70px;
+      text-align: center;
+      background: #0a7bff;
+      color: #fff;
+      border: 0;
+      border-radius: 6px;
+    }
+    .send[disabled] {
+      background-color: #aaa;
+    }
+    .chat-body {
+      margin-top: 40px;
+      margin-bottom: 50px;
+      height: 100%;
+      padding: 0 15px;
+      overflow-scrolling: touch;
+      overflow: hidden auto;
+    }
+    .chat-body .lt {
+      padding: 15px 0;
+      width: 100%;
+      display: -webkit-box;
+      display: -webkit-flex;
+      display: flex;
+      -webkit-flex-wrap: nowrap;
+      flex-wrap: nowrap;
+      -webkit-box-align: start;
+      -webkit-align-items: flex-start;
+      align-items: flex-start;
+    }
+    .lt .userHead {
+      -webkit-box-flex: 0;
+      -webkit-flex: 0 0 36px;
+      flex: 0 0 36px;
+      overflow: hidden;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+    }
+    .msg-cont {
+      margin: 0 15px;
+      font-size: 12px;
+      line-height: 20px;
+      height: auto;
+      position: relative;
+      padding: 8px 10px;
+      border-radius: 5px;
+      background-color: #fff;
+      white-space: pre-line;
+    }
+    .lt .msg-cont:after {
+      position: absolute;
+      display: block;
+      content: "";
+      top: 5px;
+      width: 0;
+      height: 0;
+      border: 8px solid transparent;
+    }
+    .ltY .msg-cont:after {
+      left: -15px;
+      border-right-color: #fff;
+    }
+    .ltM {
+      -webkit-box-pack: end;
+      -webkit-justify-content: flex-end;
+      justify-content: flex-end;
+    }
+    .ltM .msg-cont {
+      color: #fff;
+      background-color: #1173ee;
+    }
+    .ltM .msg-cont:after {
+      right: -15px;
+      border-left-color: #1173ee;
+    }
+  </style>
+</head>
+<body>
+<div class="wrapper" id="wrapper">
+  <!-- header start -->
+  <div class="header">
+    <div class="op lt"><a href="javascript:history.back(-1);"><i class="f20 iconfont">&#xe602;</i></a></div>
+    <h2>在线客服</h2>
+  </div>
+  <!-- header end -->
+  <div class="chat-body">
+    <div class="lt ltY">
+      <img class="userHead" src="https://hunchunapp.mini.bandaochina.com/static/api/imags/admin_headimgurl.png" alt="">
+      <div class="msg-cont">content</div>
+    </div>
+    <div class="lt ltM">
+      <div class="msg-cont">content</div>
+      <img class="userHead" src="https://hunchunapp.mini.bandaochina.com/static/api/imags/admin_headimgurl.png" alt="">
+    </div>
+  </div>
+  <div class="chat-footer">
+    <input type="text" class="text-input" placeholder="请输入内容">
+    <button class="send">发送</button>
+  </div>
+</div>
+<script type="text/javascript" src="<{$common.baseurl}>/public/script/juicer.js"></script>
+</body>
+</html>

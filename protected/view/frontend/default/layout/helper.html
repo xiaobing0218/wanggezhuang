@@ -1,0 +1,40 @@
+<div class="" style="border-top: 1px solid #f2f2f2;margin-top: 24px;background-color: #fff">
+  <div class="container w1100 helpper cut">
+    <div class="helpli cut">
+      <div class="service fl">
+        <div class="title">关注我们</div>
+        <div class="service-content">
+          <!-- <div class="service-item feed fl" onclick="location.href='/feedback/apply.html'">
+            <span>问题反馈</span>
+          </div>
+          <div class="service-item wx fl">
+            <span>公众号</span>
+            <div class="code">
+              <img src="/public/image/qrcode.png" alt="">
+            </div>
+          </div>
+          <div class="cl"></div> -->
+          <img src="/public/image/qrcode.jpg" alt="傲江山公众号" style="width:155px;height:155px;">
+        </div>
+      </div>
+      <{if !empty($helper_list)}>
+      <{foreach $helper_list as $v}>
+      <dl>
+        <dt><{$v.cate_name}></dt>
+        <{if !empty($v.children)}>
+        <{foreach $v.children as $vv}>
+        <dd><a title="<{$vv.title}>" href="<{if !empty($vv.link)}><{$vv.link}><{else}><{url c='help' a='view' id=$vv.id}><{/if}>"><{$vv.title}></a></dd>
+        <{/foreach}>
+        <{/if}>
+      </dl>
+      <{/foreach}>
+      <{/if}>
+      <div class="contact fr">
+        <div class="title">服务热线</div>
+        <div class="tel">0532-88916157</div>
+        <div class="desc">时间：9:00 - 18:00</div>
+        <div class="desc" style="display: none">(仅收市话费)</div>
+      </div>
+    </div>
+  </div>
+</div>

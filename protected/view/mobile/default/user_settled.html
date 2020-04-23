@@ -1,0 +1,218 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<{include file='mobile/default/lib/meta.html'}>
+<title>商家申请入住 - <{$GLOBALS.cfg.site_name}></title>
+  <link rel="stylesheet" href="<{$common.theme}>/plugins/jquery-weui/lib/weui.min.css">
+  <link rel="stylesheet" href="<{$common.theme}>/plugins/jquery-weui/css/jquery-weui.min.css">
+<link rel="stylesheet" type="text/css" href="<{$common.theme}>/css/general.css" />
+<link rel="stylesheet" type="text/css" href="<{$common.theme}>/iconfont/iconfont.css">
+<link rel="stylesheet" type="text/css" href="<{$common.theme}>/css/user.css" />
+  <script src="<{$common.theme}>/js/dist/lrz.bundle.js"></script>
+<script type="text/javascript" src="<{$common.theme}>/js/consignee.js"></script><script src="<{$common.theme}>/js/dist/lrz.bundle.js"></script>
+<script type="text/javascript">
+
+  function submitForm() {
+    var company_name=$('#company_name').val();
+    if (company_name==''){
+      $.vdsPrompt({content:'请输入公司名称'});
+      return ;
+    }
+    if (company_name.length<4){
+      $.vdsPrompt({content:'请输入正确公司名称'});
+      return ;
+    }
+    var legal_name=$('#legal_name').val();
+    if (legal_name==''){
+      $.vdsPrompt({content:'请输入法人姓名'});
+      return ;
+    }
+    if (legal_name.length<2){
+      $.vdsPrompt({content:'请输入正确法人姓名'});
+      return ;
+    }
+    var contact=$('#contact').val();
+    if (contact==''){
+      $.vdsPrompt({content:'请输入联系电话'});
+      return ;
+    }
+    if (contact.length<8){
+      $.vdsPrompt({content:'请输入正确联系电话'});
+      return ;
+    }
+    var address=$('#address').val();
+    if (address==''){
+      $.vdsPrompt({content:'请输入营业地址'});
+      return ;
+    }
+    if (address.length<6){
+      $.vdsPrompt({content:'请输入正确营业地址'});
+      return ;
+    }
+    var form = new FormData();
+
+
+    form.append('address',address);
+    form.append('contact',contact);
+    form.append('legal_name',legal_name);
+    form.append('company_name',company_name);
+
+    var url="<{url c='mobile/settled' a='add'}>";
+    $.ajax({
+
+      url: url,//上传地址
+
+      async: true,//异步
+
+      type: 'post',//post方式
+
+      data: form,//FormData数据
+
+      processData: false,//不处理数据流 !important
+
+      contentType: false,//不设置http头 !important
+
+
+        success: function(data){//上传成功回调
+          if(data == "success"){
+            $.vdsPrompt({content:'提交成功',clicked: function () {
+                window.location.href = "<{url c='mobile/settled' a='index'}>"
+              }});
+          }else{
+            $.vdsPrompt({content:data});
+
+          }
+
+
+        }
+
+      })
+
+  }
+
+  function sumbies() {
+    if ($('#license_res').css('display')=='none'){
+      $('#license_css').css('display','none');
+      $('#license_res').css('display','')
+    }else {
+      $('#license_css').css('display','');
+      $('#license_res').css('display','none')
+    }
+  }
+</script>
+</head>
+<body>
+<div class="wrapper">
+  <div class="header">
+    <div class="op lt"><a href="<{url c='mobile/user' a='index'}>"><i class="f20 iconfont">&#xe602;</i></a></div>
+    <h2>商家申请入驻</h2>
+  </div>
+  <{if $info}>
+  <div class="address uform module">
+    <form id="consignee-form" enctype="multipart/form-data" >
+      <div class="form-content">
+        <div class="form-item">
+          <div class="item-title">公司名称</div>
+          <input type="text" placeholder="请输入公司名称" name="company_name" id="company_name" value="<{$info.company_name}>" <{if $info.status!=2}>readonly="readonly"<{/if}>>
+        </div>
+        <div class="form-item">
+          <div class="item-title">法人姓名</div>
+          <input type="text" placeholder="请输入法人姓名" name="legal_name" id="legal_name" value="<{$info.legal_name}>" <{if $info.status!=2}>readonly="readonly"<{/if}>>
+        </div>
+        <div class="form-item">
+          <div class="item-title">联系电话</div>
+          <input type="tel" placeholder="请输入联系电话" name="contact" id="contact" value="<{$info.contact}>" <{if $info.status!=2}>readonly="readonly"<{/if}>>
+        </div>
+        <div class="form-item">
+          <div class="item-title">营业地址</div>
+          <input type="text" placeholder="请输入营业地址" name="address" id="address" value="<{$info.address}>" <{if $info.status!=2}>readonly="readonly"<{/if}>>
+        </div>
+        <div class="file" >
+          <div class="file-title-active">营业执照</div>
+
+          <div class="b-width">
+            <div id="license_res" style="display: none">
+              <input class="file-input" id="file" type="file" name="license" >
+              <div class="tips">仅允许上传"jpg"、"png"、"jpeg"类型的图片</div>
+            </div>
+            <div id="license_css">
+              <img src="/<{$info['license']}>" style="height: 80px;margin-left: 40px;width: 120px">
+              <input type="hidden" value="<{$info['license']}>" name="img" id="img">
+            </div>
+            <{if ($info['status']==2)}>
+            <a onclick="sumbies()"><span>点击上传</span></a>
+            <{/if}>
+          </div>
+        </div>
+        <{if ($info['status']==0)}>
+        <input type="text" class="form-item" value="入驻信息已提交成功，请耐心等待专员审核"  readonly="readonly" style="width: 100%;  border: none;"/>
+        <{/if}>
+        <{if ($info['status']==2)}>
+        <div class="form-item">
+          <div class="item-title">拒绝理由</div>
+          <input type="text" value="<{$info['meta_description']}>" readonly="readonly" style="border: 0">
+        </div>
+        <div class="btn" onclick="submitForm()">提交申请</div>
+        <{/if}>
+
+      </div>
+    </form>
+  </div>
+  <{else}>
+  <div class="address uform module">
+    <form id="consignee-form" enctype="multipart/form-data" >
+      <div class="form-content">
+        <div class="form-item">
+          <div class="item-title">公司名称</div>
+          <input type="text" placeholder="请输入公司名称" name="company_name" id="company_name">
+        </div>
+        <div class="form-item">
+          <div class="item-title">法人姓名</div>
+          <input type="text" placeholder="请输入法人姓名" name="legal_name" id="legal_name">
+        </div>
+        <div class="form-item">
+          <div class="item-title">联系电话</div>
+          <input type="tel" placeholder="请输入联系电话" name="contact" id="contact">
+        </div>
+        <div class="form-item">
+          <div class="item-title">营业地址</div>
+          <input type="text" placeholder="请输入营业地址" name="address" id="address">
+        </div>
+        <div class="file">
+          <div class="file-title">上传营业执照</div>
+          <div>
+            <input class="file-input" id="file" type="file" name="license" id="license">
+            <div class="tips">仅允许上传"jpg"、"png"、"jpeg"类型的图片</div>
+          </div>
+        </div>
+        <div class="btn" onclick="submitForm()">申请入驻</div>
+      </div>
+    </form>
+  </div>
+<{/if}>
+</div>
+<{include file='mobile/default/lib/footer.html'}>
+</body>
+<script>
+
+    document.querySelector('#file').addEventListener('change', function () {
+        lrz(this.files[0])
+            .then(function (rst) {
+                // 处理成功会执行
+                console.log(rst);
+                var url="<{url c='enter' a='img'}>";
+                var data={img:rst.base64}
+                $.post(url,data,function (e) {
+                    console.log(e);
+                })
+            })
+            .catch(function (err) {
+                // 处理失败会执行
+            })
+            .always(function () {
+                // 不管是成功失败，都会执行
+            });
+    })
+
+</script>
+</html>

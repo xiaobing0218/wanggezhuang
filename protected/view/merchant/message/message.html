@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <{include file='merchant/lib/meta.html'}>
+    <link rel="stylesheet" type="text/css" href="public/theme/backend/css/verydows.css"/>
+    <link rel="stylesheet" type="text/css" href="public/theme/backend/css/main.css"/>
+    <script type="text/javascript" src="public/script/jquery.js"></script>
+    <script type="text/javascript" src="public/theme/backend/js/verydows.js"></script>
+    <script type="text/javascript">
+        $('dl.upsw dt a').click(function () {
+            $(this).siblings().removeClass('cur').parent().next('dd').children('div').addClass('hide');
+            $(this).addClass('cur').parent().next('dd').find('div').eq($(this).index()).removeClass('hide');
+        });
+
+        function submitForm() {
+            $('#full_name').vdsFieldChecker({rules: {required: [true, '请输入联系人'], maxlen: [60, '联系人不能超过60个字符']}});
+            $('#telephone').vdsFieldChecker({rules: {required: [true, '请输入联系方式'], maxlen: [20, '联系方式不能超过20个字符']}});
+            $('#company_name').vdsFieldChecker({rules: {required: [true, '请输入公司名称'], maxlen: [100, '公司名称不能超过100个字符']}});
+            $('#abbreviation').vdsFieldChecker({rules: {required: [true, '请输入公司简称'], maxlen: [10, '公司简称不能超过10个字符']}});
+            $('#address').vdsFieldChecker({rules: {required: [true, '请输入公司地址'], maxlen: [100, '公司地址不能超过100个字符']}});
+            $('#introduction').vdsFieldChecker({rules: {required: [true, '请输入公司简介']}});
+            $('#mail').vdsFieldChecker({rules: {required: [true, '请输入公司QQ'], maxlen: [15, '公司QQ不能超过15个字符']}});
+            $('form').vdsFormChecker();
+        }
+    </script>
+</head>
+<body>
+<div class="content">
+    <div class="loc"><h2><i class="icon"></i>企业信息:<font class="ml5"></font></h2></div>
+    <form method="post" action="<{url m=$MOD c='message' a='edit'}>" enctype="multipart/form-data">
+        <input type="hidden" name="token" value="<{$user.hash}>"/>
+        <div class="box">
+            <div class="module">
+                <table class="dataform">
+
+                    <tr>
+                        <th style="width: 18%">公司logo图</th>
+                        <td>
+                            <dl class="upsw pad5">
+
+                                <dt class="pad5"><a class="ml5 mr5" id="ml">上传文件</a></dt>
+                                <dd class="mt5 pad5" id="logoet">
+
+                                    <div>
+                                        <label><input name="logo_src" class="w500 txt" type="text" value="<{$user.logo}>" readonly="readonly"></label>
+                                        <a title="查看图片" class="picflag icon ml5"
+                                           onclick="$(this).vdsPopMedia({src:'<{$user.logo}>'})"></a>
+                                    </div>
+                                </dd>
+                                <dd class="mt5 pad5" id="logo" style="display: none">
+                                    <div><label><input name="logo" type="file"/></label>
+                                        <p class="caaa mt10">仅允许上传 "png"、"jpg"、"jpeg" 类型的图片,建议尺寸30px*30px</p></div>
+                                    <div class="hide"><label><input title="URL" name="logo" class="w500 txt"
+                                                                    type="text"/></label></div>
+                                </dd>
+
+                            </dl>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th style="width: 18%">公司bannaner图</th>
+                        <td>
+                            <dl class="upsw pad5">
+
+                                <dt class="pad5"><a class="ml5 mr5" id="ul">上传文件</a></dt>
+                                <dd class="mt5 pad5" id="bannanert">
+                                    <div>
+                                        <label><input name="bannaner_src" class="w500 txt" type="text" readonly="readonly"
+                                                      value="<{$user.bannaner}>"/></label>
+                                        <a title="查看图片" class="picflag icon ml5"
+                                           onclick="$(this).vdsPopMedia({src:'<{$user.bannaner}>'})"></a>
+                                    </div>
+                                </dd>
+
+                                <dd class="mt5 pad5" id="bannaner" style="display: none">
+                                    <div><label><input name="bannaner" type="file"/></label>
+                                        <p class="caaa mt10">仅允许上传 "png"、"jpg"、"jpeg" 类型的图片,建议宽度1100px，高度最大不超过500px</p></div>
+                                    <div class="hide"><label><input title="URL" name="bannaner" class="w500 txt"
+                                                                    type="text"/></label></div>
+                                </dd>
+
+                            </dl>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th style="width: 18%">联系人</th>
+                        <td>
+                            <input class="w200 txt" name="full_name" id="full_name" type="text"
+                                   value="<{$user.full_name}>"/></td>
+                    </tr>
+
+                    <tr>
+                        <th style="width: 18%">联系电话</th>
+                        <td><input class="w200 txt" name="telephone" id="telephone" type="text"
+                                   value="<{$user.telephone}>"/></td>
+                    </tr>
+                    <tr>
+                        <th style="width: 18%">qq</th>
+                        <td><input class="w200 txt" name="mail" id="mail" type="text"
+                                   value="<{$user.mail}>"/></td>
+                    </tr>
+                    <tr>
+                        <th style="width: 18%">公司名称</th>
+                        <td><input class="w200 txt" name="company_name" id="company_name" type="text"
+                                   value="<{$user.company_name}>"/></td>
+                    </tr>
+                    <tr>
+                        <th style="width: 18%">公司简称</th>
+                        <td><input class="w200 txt" name="abbreviation" id="abbreviation" type="text"
+                                   value="<{$user.abbreviation}>"/></td>
+                    </tr>
+                    <tr>
+                        <th style="width: 18%">公司简介</th>
+                        <td><textarea class="txtarea" name="introduction" id="introduction" cols="70" rows="4"><{$user.introduction}></textarea></td>
+                    </tr>
+                    <tr>
+                        <th style="width: 18%">公司地址</th>
+                        <td><input class="w200 txt" name="address" id="address" type="text" value="<{$user.address}>"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="submitbtn">
+                <button type="button" class="ubtn btn" onclick="submitForm()">保存并更新</button>
+                <!--                <button type="reset" class="fbtn btn">重置表单</button>-->
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    $('#ml').click(function () {
+        if ($('#logo').css('display') == 'none') {
+            $('#logo').css('display', '');
+            $('#logoet').css('display', 'none');
+        } else {
+            $('#logo').css('display', 'none');
+            $('#logoet').css('display', '');
+        }
+
+    })
+    $('#ul').click(function () {
+        if ($('#bannaner').css('display') == 'none') {
+            $('#bannaner').css('display', '');
+            $('#bannanert').css('display', 'none');
+        } else {
+            $('#bannaner').css('display', 'none');
+            $('#bannanert').css('display', '');
+        }
+    })
+</script>
+</body>
+</html>

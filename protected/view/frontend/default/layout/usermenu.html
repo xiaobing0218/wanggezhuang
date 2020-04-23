@@ -1,0 +1,14 @@
+<div class="menu">
+  <{foreach $menu_list as $val}>
+  <h2><{$val.name}></h2>
+  <ul id="usermenu">
+    <{foreach $val['list'] as $v}>
+    <{if @$_GET['c'] == $v.c && @$_GET['a'] == $v.a}>
+    <li class="cur"><{$v.name}></li>
+    <{else}>
+    <li><a href="<{url c=$v.c a=$v.a}>"><{$v.name}></a></li>
+    <{/if}>
+    <{/foreach}>
+  </ul>
+  <{/foreach}>
+</div>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="hx_baseurl" content="<{$common.baseurl}>">
+<title>付款结果 - <{$GLOBALS.cfg.site_name}></title>
+<link rel="stylesheet" type="text/css" href="<{$common.theme}>/css/general.css" />
+<link rel="stylesheet" type="text/css" href="<{$common.theme}>/css/order.css" />
+  <link rel="stylesheet" type="text/css" href="<{$common.theme}>/plugins/font-awesome-4.7.0/css/font-awesome.min.css" />
+<script type="text/javascript" src="<{$common.baseurl}>/public/script/jquery.js"></script>
+<script type="text/javascript" src="<{$common.theme}>/js/general.js"></script>
+</head>
+<body>
+<!-- 顶部开始 -->
+<{layout_topper common=$common}>
+<{layout_header common=$common}>
+<!-- 主体开始 -->
+<div class="container w1100 mt30">
+  <div class="payres <{$status}>">
+    <h3><i class="icon mr10"></i><{$message}></h3>
+    <{if !empty($order)}>
+    <ul class="mt20">
+      <{foreach $order as $k=>$v}>
+      <li>订单流水号：<{$v.order_id}><a class="f12 ml10" href="<{url c='order' a='view' id=$v.order_id}>">查看订单详情</a></li>
+      <{/foreach}>
+      <li>付款总金额：<b class="red"><i class="cny">¥</i><{$order_amount}></b></li>
+    </ul>
+    <{/if}>
+    <div class="links mt20 aln-c">
+      <a href="<{url c='order' a='list'}>">返回订单列表</a>
+      <span class="sep">|</span>
+      <a href="<{url c='main' a='index'}>">返回网站首页</a>
+    </div>
+    <p class="aln-c hint"><a><i class="fa"></i> 温馨提示: </a>商城不会以订单异常、系统升级为由要求您点击任何网址链接进行退款操作。</p>
+  </div>
+</div>
+<!-- 主体结束 -->
+<div class="cl"></div>
+<!-- 页脚开始 -->
+<{layout_helper}>
+<{layout_footer}>
+<!-- 页脚结束 -->
+<script type="text/javascript" src="<{$common.baseurl}>/public/script/juicer.js"></script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<{include file='mobile/default/lib/meta.html'}>
+<title>支付订单 - <{$GLOBALS.cfg.site_name}></title>
+<link rel="stylesheet" type="text/css" href="<{$common.theme}>/css/general.css" />
+<link rel="stylesheet" type="text/css" href="<{$common.theme}>/iconfont/iconfont.css">
+<link rel="stylesheet" type="text/css" href="<{$common.theme}>/css/pay.css" />
+
+<script type="text/javascript">
+$(function(){
+  $('#payments dl').click(function(){
+    if(!$(this).hasClass('checked')){
+      $('#payments dl.checked').removeClass('checked');
+      $(this).addClass('checked');
+    }
+  });
+});
+
+function doPay(){
+  $.asynInter("<{url c='api/pay' a='url'}>", {order_id:"<{$order_id}>", payment_id:$('input[name=pid]:checked').val(), device:'mobile'}, function(res){
+    if(res.status == 'success'){
+      window.location.href = res.url;
+    }else{
+      $.vdsPrompt({content:res.msg});
+    }
+  });
+}
+
+
+//调用微信JS api 支付
+// function jsApiCall(jsApiParameters) {
+//   WeixinJSBridge.invoke(
+//     'getBrandWCPayRequest',
+//     jsApiParameters,
+//     function (res) {
+//       WeixinJSBridge.log(res.err_msg);
+//       if (res.err_msg == 'get_brand_wcpay_request:ok') {
+//         alert('支付成功！');
+//       } else {
+//         alert('支付失败：' + res.err_code + res.err_desc + res.err_msg);
+//       }
+//     }
+//   );
+// }
+//
+// function callpay(jsApiParameters) {
+//   if (typeof WeixinJSBridge == "undefined") {
+//     if (document.addEventListener) {
+//       document.addEventListener('WeixinJSBridgeReady', jsApiCall, false);
+//     } else if (document.attachEvent) {
+//       document.attachEvent('WeixinJSBridgeReady', jsApiCall);
+//       document.attachEvent('onWeixinJSBridgeReady', jsApiCall);
+//     }
+//   } else {
+//     jsApiCall(jsApiParameters);
+//   }
+// }
+
+
+</script>
+</head>
+<body>
+<div class="wrapper">
+  <!-- header start -->
+  <div class="header">
+    <div class="op lt"><a href="<{url c='mobile/order' a='view' id=$order_id}>"><i class="f20 iconfont">&#xe602;</i></a></div>
+    <h2>支付订单</h2>
+  </div>
+  <!-- header end -->
+  <div class="pay">
+    <div class="order">
+      <{foreach $order as $k=>$v}>
+      <dl>
+        <dt>订单号：</dt>
+        <dd><b class="c555" id="order_id"><{$v.order_id}></b></dd>
+      </dl>
+      <{/foreach}>
+      <dl>
+        <dt>金额：</dt>
+        <dd class="amount"><i class="f18 cny">¥</i><font class="f18 ml2"><{$order_amount}></font></dd>
+      </dl>
+    </div>
+    <div class="weui-cells__title">支付方式</div>
+    <div class="weui-cells weui-cells_checkbox">
+      <{foreach $payment_list as $v}>
+        <{if $v.name == '货到付款'}>
+          <{if $user_info.is_vip == 1}>
+            <label class="weui-cell weui-check__label" for="x<{$v.id}>">
+              <div class="weui-cell__bd">
+                <p><{$v.name}></p>
+              </div>
+              <div class="weui-cell__ft">
+                <input type="radio" class="weui-check" value="<{$v.id}>" <{if $payment_method == $v.id}>checked<{/if}> name="pid" id="x<{$v.id}>">
+                <span class="weui-icon-checked"></span>
+              </div>
+            </label>
+          <{/if}>
+        <{/if}>
+
+        <{if $v.name != '货到付款'}>
+          <label class="weui-cell weui-check__label" for="x<{$v.id}>">
+            <div class="weui-cell__bd">
+              <p><{$v.name}></p>
+            </div>
+            <div class="weui-cell__ft">
+              <input type="radio" class="weui-check" value="<{$v.id}>" <{if $payment_method == $v.id}>checked<{/if}> name="pid" id="x<{$v.id}>">
+              <span class="weui-icon-checked"></span>
+            </div>
+          </label>
+        <{/if}>
+      <{/foreach}>
+    </div>
+    <div class="weui-btn-area">
+      <a class="weui-btn weui-btn_primary" onclick="doPay()">付 款</a>
+    </div>
+  </div>
+</div>
+<{include file='mobile/default/lib/footer.html'}>
+</body>
+</html>

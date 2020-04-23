@@ -1,0 +1,191 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<{include file='mobile/default/lib/meta.html'}>
+<title>发票信息 - <{$GLOBALS.cfg.site_name}></title>
+<link rel="stylesheet" type="text/css" href="<{$common.theme}>/css/general.css" />
+<link rel="stylesheet" type="text/css" href="<{$common.theme}>/iconfont/iconfont.css">
+<link rel="stylesheet" type="text/css" href="<{$common.theme}>/css/user.css" />
+
+<script type="text/javascript">
+  $(function () {
+    var $typeText = $('#typeText');
+    var $content = $('.form-content .weui-cells');
+    $('#type').click(function () {
+      $.actions({
+        actions: [{
+          text: "普通发票抬头",
+          onClick: function() {
+            $typeText.text('普通发票抬头');
+            $content.eq(0).show();
+            $content.eq(1).hide();
+          }
+        },{
+          text: "增值税专用发票资质",
+          onClick: function() {
+            $typeText.text('增值税专用发票资质');
+            $content.eq(1).show();
+            $content.eq(0).hide();
+          }
+        }]
+      });
+    })
+
+    $('#submit').click(function () {
+      var $typeText = $('#typeText').text();
+      if($typeText == '普通发票抬头'){
+        $('#name').vdsFieldChecker({rules:{required:[true, '请输入公司名称或者姓名']}});
+        if ($('#invoice-form').vdsFormChecker({isSubmit: false}) == true) {
+          var dataset = {
+            name: $('#name').val(),
+            tax_id: $('#tax_id').val(),
+            type: 'submit',
+            cate: 1
+          };
+          $.asynInter("<{url c='api/invoice' a='add_ajax' type='submit'}>", dataset, function (res) {
+            if (res.errcode == 0) {
+              $.vdsPrompt({
+                content: '发票信息修改成功。',
+                clicked: function () {
+                  //window.location.reload();
+                }
+              });
+            } else {
+              $.vdsPrompt({content: res.errmsg});
+              return false;
+            }
+          });
+        }
+      }else if($typeText == '增值税专用发票资质'){
+        $('#company_name').vdsFieldChecker({rules:{required:[true, '请输入公司名称']}});
+        $('#vat_tax_id').vdsFieldChecker({rules:{required:[true, '输入税号']}});
+        $('#bank_name').vdsFieldChecker({rules:{required:[true, '输入开户行']}});
+        $('#account_number').vdsFieldChecker({rules:{required:[true, '输入银行账户']}});
+        $('#registered_address').vdsFieldChecker({rules:{required:[true, '输入注册地址']}});
+        $('#registration_call').vdsFieldChecker({rules:{required:[true, '输入注册电话']}});
+        if ($('#invoice-form').vdsFormChecker({isSubmit: false}) == true) {
+          var dataset = {
+            company_name: $('#company_name').val(),
+            vat_tax_id: $('#vat_tax_id').val(),
+            bank_name: $('#bank_name').val(),
+            account_number: $('#account_number').val(),
+            registered_address: $('#registered_address').val(),
+            registration_call: $('#registration_call').val(),
+            type: 'submit',
+            cate: 2
+          };
+          $.asynInter("<{url c='api/invoice' a='add_ajax' type='submit'}>", dataset, function (res) {
+            if (res.errcode == 0) {
+              $.vdsPrompt({
+                content: '发票信息修改成功。',
+                clicked: function () {
+                  //window.location.reload();
+                }
+              });
+            } else {
+              $.vdsPrompt({content: res.errmsg});
+              return false;
+            }
+          });
+        }
+      }
+    });
+  })
+</script>
+</head>
+<body>
+<div class="wrapper" id="wrapper">
+  <!-- header start -->
+  <div class="header">
+    <div class="op lt"><a href="javascript:history.back(-1);"><i class="f20 iconfont">&#xe602;</i></a></div>
+    <h2>发票信息</h2>
+  </div>
+  <form id="invoice-form">
+    <p style="background: #fff;padding: 15px" class="f12 c888">温馨提示：电子发票即电子增值税发票，是税局认可的有效凭证，其法律效力、基本用途及使用规定同纸质发票。</p>
+  <div class="weui-cells">
+    <a id="type" class="weui-cell weui-cell_access" href="javascript:;">
+      <div class="weui-cell__bd">
+        <p>发票类型</p>
+      </div>
+      <div id="typeText" class="weui-cell__ft">普通发票抬头</div>
+    </a>
+  </div>
+  <div class="form-content">
+    <div class="weui-cells f16">
+      <div class="weui-cell">
+        <div class="weui-cell__hd">
+          <label class="weui-label">姓名</label>
+        </div>
+        <div class="weui-cell__bd">
+          <input class="weui-input" id="name" type="text" placeholder="请输入公司名称/姓名" value="<{$invoice_info.name}>">
+        </div>
+      </div>
+      <div class="weui-cell">
+        <div class="weui-cell__hd">
+          <label class="weui-label">税号</label>
+        </div>
+        <div class="weui-cell__bd">
+          <input class="weui-input" id="tax_id" type="text" placeholder="请输入税号" value="<{$invoice_info.tax_id}>">
+        </div>
+      </div>
+    </div>
+    <div class="weui-cells f16 hide">
+      <div class="weui-cell">
+        <div class="weui-cell__hd">
+          <label class="weui-label">公司名称</label>
+        </div>
+        <div class="weui-cell__bd">
+          <input class="weui-input" id="company_name" type="text" placeholder="请输入公司名称" value="<{$invoice_info.company_name}>">
+        </div>
+      </div>
+      <div class="weui-cell">
+        <div class="weui-cell__hd">
+          <label class="weui-label">税号</label>
+        </div>
+        <div class="weui-cell__bd">
+          <input class="weui-input" id="vat_tax_id" type="text" placeholder="请输入税号" value="<{$invoice_info.vat_tax_id}>">
+        </div>
+      </div>
+      <div class="weui-cell">
+        <div class="weui-cell__hd">
+          <label class="weui-label">开户行</label>
+        </div>
+        <div class="weui-cell__bd">
+          <input class="weui-input" id="bank_name" type="text" placeholder="请输入开户行" value="<{$invoice_info.bank_name}>">
+        </div>
+      </div>
+      <div class="weui-cell">
+        <div class="weui-cell__hd">
+          <label class="weui-label">开户银行账号</label>
+        </div>
+        <div class="weui-cell__bd">
+          <input class="weui-input" id="account_number" type="text" placeholder="请输入开户银行账号" value="<{$invoice_info.account_number}>">
+        </div>
+      </div>
+      <div class="weui-cell">
+        <div class="weui-cell__hd">
+          <label class="weui-label">注册地址</label>
+        </div>
+        <div class="weui-cell__bd">
+          <input class="weui-input" id="registered_address" type="text" placeholder="请输入注册地址" value="<{$invoice_info.registered_address}>">
+        </div>
+      </div>
+      <div class="weui-cell">
+        <div class="weui-cell__hd">
+          <label class="weui-label">注册电话</label>
+        </div>
+        <div class="weui-cell__bd">
+          <input class="weui-input" id="registration_call" type="tel" placeholder="请输入注册电话" value="<{$invoice_info.registration_call}>">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="weui-btn-area">
+    <a id="submit" href="javascript:" class="weui-btn weui-btn_primary">保存</a>
+  </div>
+  </form>
+</div>
+<script type="text/javascript" src="<{$common.baseurl}>/public/script/juicer.js"></script>
+<{include file='mobile/default/lib/footer.html'}>
+</body>
+</html>

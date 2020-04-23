@@ -1,0 +1,28 @@
+.cli h2 {font-size: 18px;color: #5E5E5E;height: 50px;line-height: 50px;padding-left: 20px;}
+.cli ul li {font-size:14px;color:#666;height: 40px;line-height: 40px;padding-left: 24px;}
+.cli ul li a {font-size:14px;color: #5E5E5E;}
+.cli ul li a:hover {text-decoration:none;color:#1173ee}
+.cli ul li.cur {padding-left:30px;border-left: 2px solid #1173ee;background: #ecf4fe;color: #1173ee;}
+.cli dl {color:#555;}
+.cli dl dt {font-size: 18px;padding: 10px 0 10px 20px;line-height: 30px;font-weight:bold;}
+.cli dl dd {
+    padding: 10px 0 10px 20px;
+    line-height: 20px;
+    font-size: 14px;
+    border-left: 3px solid transparent;
+}
+.cli dl dd a {
+    color: #5E5E5E;
+}
+.cli dl dd.cur {color:#666;background: #ecf4fe;border-left-color: #1173ee;}
+.article {height:auto;padding:20px 20px 50px 20px;border: 1px solid #f2f2f2;background: #fff;}
+.article h1 {font-size:18px;font-weight:normal;padding:5px 0 10px 0;border-bottom: 1px solid #eee;}
+.article .content {font-size:14px;color:#666;line-height:200%;}
+.atli {width:auto;padding-bottom:20px;height:auto;padding: 10px 20px;border: 1px solid #f2f2f2;background: #fff;}
+.atli h1 {font-size:14px;color:#777;padding: 10px 0;border-bottom:1px solid #eee;}
+.atli ul {padding: 30px 20px;}
+.atli ul li {padding:10px 5px;color: #868686;list-style:inside disc;font-size: 14px;border-bottom:1px solid #eee;}
+.atli ul li a{
+    color: #333;
+}
+.atli ul li span.fr {color:#aaa;}

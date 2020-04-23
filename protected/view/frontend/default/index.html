@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="hx_baseurl" content="<{$common.baseurl}>">
+<meta name="keywords" content="<{$GLOBALS.cfg.home_keywords}>" />
+<meta name="description" content="<{$GLOBALS.cfg.home_description}>" />
+<title><{$GLOBALS.cfg.home_title}></title>
+<link rel="stylesheet" type="text/css" href="<{$common.theme}>/css/general.css" />
+<link rel="stylesheet" type="text/css" href="<{$common.theme}>/css/index.css" />
+<link rel="stylesheet" type="text/css" href="<{$common.theme}>/plugins/swiper/css/swiper.min.css" />
+<script type="text/javascript" src="<{$common.baseurl}>/public/script/jquery.js"></script>
+<script type="text/javascript" src="<{$common.theme}>/js/general.js"></script>
+<script type="text/javascript" src="<{$common.theme}>/js/carousel.js"></script>
+<script type="text/javascript" src="<{$common.theme}>/plugins/swiper/js/swiper.min.js"></script>
+</head>
+<body>
+<!-- 顶部开始 -->
+<{layout_topper common=$common}>
+<!-- 头部开始 -->
+<{layout_header common=$common}>
+<!-- 主体开始 -->
+<div class="swiper-container index-banner" id="index-banner">
+  <div class="swiper-wrapper">
+    <{if !empty($ad)}>
+    <{foreach $ad as $v}>
+    <div class="swiper-slide" style="background-image: url(<{$v.src}>)" onclick="jump_fun('<{$v.link}>')"></div>
+    <{/foreach}>
+    <{/if}>
+  </div>
+  <div class="swiper-pagination"></div>
+  <div class="index-banner-wrapper" onclick="clickHandle()">
+    <div class="w1100 x-auto index-cate clear" onclick="clickHandle()">
+      <!-- <div class="left-cate fl">
+        <ul id="catebar">
+          <{foreach $catebar as $v}>
+          <li class="cate-item">
+            <a class="nowrap-text" href="<{url c='category' a='index' id=$v.cate_id}>">
+              <span><{$v.cate_name}></span>
+            </a>
+            <{if !empty($v.children)}>
+            <div class="right-cate">
+              <{foreach $v.children as $vv}>
+              <div class="right-two">
+                <a href="<{url c='category' a='index' id=$vv.cate_id}>">
+                  <span><{$vv.cate_name}></span>
+                </a> >>>
+                <{if(!empty($vv.children))}>
+                <span class="right-three">
+                <{foreach $vv.children as $vvv}>
+                <a href="<{url c='category' a='index' id=$vvv.cate_id}>">
+                  <span><{$vvv.cate_name}></span>
+                </a>
+                <{/foreach}>
+                </span>
+                <{/if}>
+              </div>
+              <{/foreach}>
+            </div>
+            <{/if}>
+          </li>
+          <{/foreach}>
+        </ul>
+      </div> -->
+    </div>
+  </div>
+</div>
+<div class="container w1100">
+  <!-- 新品上市开始 -->
+  <div class="module mt30 cut">
+    <div class="gli_t">
+      <h2 class="fl">新品上市 <span class="tag">NEW</span> <span class="desc">商城新品 精心选配</span></h2>
+    </div>
+    <div class="gli w1110">
+        <div class="u_banner">
+          <a href="<{$ce['0']['link']}>" target="_blank">
+          <img class="adsense" src="<{$ce['0']['src']}>" alt="">
+          </a>
+        </div>
+        <{if !empty($newarrival)}>
+        <ul class="ul_box">
+          <{foreach $newarrival as $v}>
+          <li>
+            <div class="im">
+              <a href="<{url c='goods' a='index' id=$v.goods_id}>">
+                <img alt="<{$v.goods_name}>" src="<{$common.baseurl}>/upload/goods/prime/<{$v.merchant_id.user_id}>/<{$v.goods_image}>" />
+              </a>
+              <{if $v.merchant_id.user_id==12}>
+              <div class="ziy">自营</div>
+              <{/if}>
+            </div>
+            <h3><a href="<{url c='goods' a='index' id=$v.goods_id}>"><{truncate($v.goods_name, 40)}></a></h3>
+            <h4 class="shop"><a href="<{url c='goods' a='shop' id=$v.merchant_id.user_id}>"><{$v.merchant_id.abbreviation}></a></h4>
+            <p class="price"><i>¥</i> <{$v.now_price}></p>
+          </li>
+          <{/foreach}>
+        </ul>
+        <{/if}>
+    </div>
+  </div>
+  <!-- 首页横幅Banner广告位一(1110x90)开始 -->
+  <div class="module mt20 cut">
+  <{if !empty($adv11)}>
+  <{foreach $adv11 as $v1}>
+  <img src="<{$v1.src}>" style="width:1100px;">
+  <{/foreach}>
+  <{/if}>
+  </div>
+  <!-- 首页横幅Banner广告位一(1110x90)结束 -->
+  <!-- 新品上市结束 -->
+  <!-- 推荐商品开始 -->
+  <div class="cl"></div>
+  <div class="module mt20 cut">
+    <div class="gli_t">
+      <h2>推荐商品</h2>
+    </div>
+    <div class="gli w1110">
+      <div class="u_banner">
+        <a href="<{$ce['1']['link']}>" target="_blank">
+        <img class="adsense" src="<{$ce['1']['src']}>" alt="">
+        </a>
+      </div>
+      <{if !empty($recommend)}>
+      <ul class="ul_box">
+        <{foreach $recommend as $v}>
+        <li>
+          <div class="im">
+              <a href="<{url c='goods' a='index' id=$v.goods_id}>">
+                  <img alt="<{$v.goods_name}>" src="<{$common.baseurl}>/upload/goods/prime/<{$v.merchant_id.user_id}>/<{$v.goods_image}>" />
+              </a>
+            <{if $v.merchant_id.user_id==12}>
+            <div class="ziy">自营</div>
+            <{/if}>
+          </div>
+          <h3><a href="<{url c='goods' a='index' id=$v.goods_id}>"><{truncate($v.goods_name, 40)}></a></h3>
+          <h4 class="shop"><a href="<{url c='goods' a='shop' id=$v.merchant_id.user_id}>"><{$v.merchant_id.abbreviation}></a></h4>
+          <p class="price"><i>¥</i> <{$v.now_price}></p>
+        </li>
+        <{/foreach}>
+      </ul>
+      <{/if}>
+    </div>
+  </div>
+  <!-- 推荐商品结束 -->
+  <!-- 首页横幅Banner广告位二(1110x100)开始 -->
+  <div class="module mt20 cut">
+  <{if !empty($adv12)}>
+  <{foreach $adv12 as $v2}>
+  <img src="<{$v2.src}>" style="width:1100px;">
+  <{/foreach}>
+  <{/if}>
+  </div>
+  <!-- 首页横幅Banner广告位二(1110x100)结束 -->
+  <!-- 特价促销开始 -->
+  <div class="cl"></div>
+  <div class="module mt20 cut">
+    <div class="gli_t">
+      <h2>特价促销</h2>
+    </div>
+    <div class="gli w1110">
+      <div class="u_banner">
+        <a href="<{$ce['2']['link']}>" target="_blank">
+          <img class="adsense" src="<{$ce['2']['src']}>" alt="">
+        </a>
+      </div>
+      <{if !empty($bargain)}>
+      <ul class="ul_box">
+        <{foreach $bargain as $v}>
+        <li>
+          <div class="im">
+              <a href="<{url c='goods' a='index' id=$v.goods_id}>">
+                  <img alt="<{$v.goods_name}>" src="<{$common.baseurl}>/upload/goods/prime/<{$v.merchant_id.user_id}>/<{$v.goods_image}>" />
+              </a>
+            <{if $v.merchant_id.user_id==12}>
+            <div class="ziy">自营</div>
+            <{/if}>
+          </div>
+          <h3><a href="<{url c='goods' a='index' id=$v.goods_id}>"><{truncate($v.goods_name, 40)}></a></h3>
+            <h4 class="shop"><a href="<{url c='goods' a='shop' id=$v.merchant_id.user_id}>"><{$v.merchant_id.abbreviation}></a></h4>
+          <p class="price"><i>¥</i> <{$v.now_price}></p>
+        </li>
+        <{/foreach}>
+      </ul>
+      <{/if}>
+    </div>
+  </div>
+  <!-- 特价促销结束 -->
+  <!-- 首页横幅Banner广告位三(1110x80)开始 -->
+  <div class="module mt20 cut">
+  <{if !empty($adv13)}>
+  <{foreach $adv13 as $v3}>
+  <img src="<{$v3.src}>" style="width:1100px;">
+  <{/foreach}>
+  <{/if}>
+  </div>
+  <!-- 首页横幅Banner广告位三(1110x80)结束 -->
+
+  <!-- 游玩开始 -->
+  <div class="cl"></div>
+  <div class="module mt20 cut">
+    <div class="gli_t">
+      <h2>游玩</h2>
+    </div>
+    <div class="gli w1110">
+      <div class="u_banner">
+        <a href="<{$ce['3']['link']}>" target="_blank">
+          <img class="adsense" src="<{$ce['3']['src']}>" alt="">
+        </a>
+      </div>
+      <{if !empty($youwan)}>
+      <ul class="ul_box">
+        <{foreach $youwan as $v1}>
+        <li>
+          <div class="im">
+              <a href="<{url c='goods' a='index' id=$v1.goods_id}>">
+                  <img alt="<{$v1.goods_name}>" src="<{$common.baseurl}>/upload/goods/prime/<{$v1.merchant_id.user_id}>/<{$v1.goods_image}>" />
+              </a>
+            <{if $v1.merchant_id.user_id==12}>
+            <div class="ziy">自营</div>
+            <{/if}>
+          </div>
+          <h3><a href="<{url c='goods' a='index' id=$v1.goods_id}>"><{truncate($v1.goods_name, 40)}></a></h3>
+            <h4 class="shop"><a href="<{url c='goods' a='shop' id=$v1.merchant_id.user_id}>"><{$v1.merchant_id.abbreviation}></a></h4>
+          <p class="price"><i>¥</i> <{$v1.now_price}></p>
+        </li>
+        <{/foreach}>
+      </ul>
+      <{/if}>
+    </div>
+  </div>
+  <!-- 游玩结束 -->
+  
+  <!-- 首页横幅Banner广告位四(1110x80)开始 -->
+  <div class="module mt20 cut">
+  <{if !empty($adv14)}>
+  <{foreach $adv14 as $v4}>
+  <img src="<{$v4.src}>" style="width:1100px;">
+  <{/foreach}>
+  <{/if}>
+  </div>
+  <!-- s(1110x80)结束 -->
+
+</div>
+<{layout_helper}>
+<!-- 页脚开始 -->
+<{layout_footer}>
+<!-- 页脚结束 -->
+<script type="text/javascript" src="<{$common.baseurl}>/public/script/juicer.js"></script>
+<script>
+  var mySwiper = new Swiper('#index-banner', {
+    autoplay: {
+      delay: 5000,
+      stopOnLastSlide: false,
+      disableOnInteraction: false,
+    },
+    loop: true,
+    preventClicks : false,
+    pagination: {
+      el: '.swiper-pagination',
+      clicked: true,
+    }
+  })
+  function jump_fun(link) {
+    window.location.href = link;
+  }
+  function clickHandle() {
+    $('.swiper-slide')[mySwiper.realIndex].click();
+    event.stopPropagation();
+  }
+</script>
+</body>
+</html>

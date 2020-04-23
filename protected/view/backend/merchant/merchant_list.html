@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<{include file='backend/lib/meta.html'}>
+<link rel="stylesheet" type="text/css" href="public/theme/backend/css/verydows.css" />
+<link rel="stylesheet" type="text/css" href="public/theme/backend/css/main.css" />
+<script type="text/javascript" src="public/script/jquery.js"></script>
+<script type="text/javascript" src="public/theme/backend/js/verydows.js"></script>
+<script type="text/javascript" src="public/theme/backend/js/list.js"></script>
+</head>
+<body>
+<div class="content">
+  <div class="loc"><h2><i class="icon"></i>商家列表</h2></div>
+  <div class="box">
+    <div class="doacts">
+      <a class="ae add btn" href="<{url m=$MOD c='merchant' a='add'}>"><i></i><font>添加新商家</font></a>
+      <a class="ae btn" onclick="doslvent('<{url m=$MOD c='merchant' a='remove'}>', 'id')"><i class="edit"></i><font>解除微信绑定</font></a>
+      <a class="ae btn" onclick="doslvent('<{url m=$MOD c='merchant' a='edit'}>', 'id')"><i class="edit"></i><font>编辑</font></a>
+      <a class="ae btn" onclick="doslvent('<{url m=$MOD c='merchant' a='delete'}>', 'id')"><i class="remove"></i><font>删除</font></a>
+      <a class="ae btn" onclick="doslvent('<{url m=$MOD c='merchant' a='status'}>', 'id')"><i class="edit"></i><font>暂停</font></a>
+      <a class="ae btn" onclick="doslvent('<{url m=$MOD c='merchant' a='enable'}>', 'id')"><i class="edit"></i><font>启用</font></a>
+    </div>
+    <div class="module mt5">
+      <table class="datalist">
+        <tr>
+          <th width="50" colspan="2">编号</th>
+          <th class="ta-l">用户名</th>
+          <th class="ta-l" width="210">联系人</th>
+          <th class="ta-l" width="190">联系方式</th>
+          <th class="ta-l" width="190">公司名称</th>
+          <th class="ta-l" width="190">公司简称</th>
+          <th class="ta-l" width="190">微信绑定状态</th>
+          <th width="130">上次登录日期</th>
+          <th width="130">上次登录IP</th>
+          <th width="130">创建日期</th>
+          <th width="130">状态</th>
+          <th width="100">操作</th>
+        </tr>
+        <{foreach $results as $v}>
+        <tr>
+          <td width="20"><input name="id" type="checkbox" value="<{$v.user_id}>" /></td>
+          <td width="30"><{$v.user_id}></td>
+          <td class="ta-l"><a class="blue" href="<{url m=$MOD c='merchant' a='edit' id=$v.user_id}>"><{$v.username}></a></td>
+          <td class="ta-l"><{if !empty($v.full_name)}><{$v.full_name}><{else}><font class="c999">未设置</font><{/if}></td>
+          <td class="ta-l"><{$v.telephone}></td>
+          <td class="ta-l"><{$v.company_name}></td>
+          <td class="ta-l"><{$v.abbreviation}></td>
+          <td class="ta-l"><{if !empty($v.open_id)}>已绑定<{else}><font class="c999">未绑定</font><{/if}></td>
+          <td class="c888"><{date('Y-m-d', $v.last_date)}></td>
+          <td class="c888"><{$v.last_ip}></td>
+          <td class="c888"><{date('Y-m-d', $v.created_date)}></td>
+          <td class="c888"><{if $v.status==1}>正常<{else}>暂停<{/if}></td>
+          <td>
+            <a class="blue" href="<{url m=$MOD c='merchant' a='preview' id=$v.user_id}>">预览</a>
+            <a class="blue" href="<{url m=$MOD c='merchant' a='edit' id=$v.user_id}>">编辑</a>
+          </td>
+        </tr>
+        <{/foreach}>
+      </table>
+    </div>
+    <{if !empty($paging)}>
+    <div class="libom mt5"><{html_paging m=$MOD c='merchant' a='index' paging=$paging class='paging'}></div>
+    <{/if}>
+  </div>
+</div>
+</body>
+</html>

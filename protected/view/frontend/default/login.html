@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="hx_baseurl" content="<{$common.baseurl}>">
+<meta name="keywords" content="用户登录" />
+<meta name="description" content="用户登录" />
+<title>用户登陆 - <{$GLOBALS.cfg.site_name}></title>
+<link rel="stylesheet" type="text/css" href="<{$common.theme}>/css/general.css" />
+<link rel="stylesheet" type="text/css" href="<{$common.theme}>/css/login.css" />
+<link rel="stylesheet" type="text/css" href="<{$common.theme}>/plugins/font-awesome-4.7.0/css/font-awesome.min.css" />
+<script type="text/javascript" src="<{$common.baseurl}>/public/script/jquery.js"></script>
+<script type="text/javascript" src="<{$common.theme}>/js/general.js"></script>
+<script type="text/javascript">
+function login(btn){
+  $('#username').vdsFieldChecker({rules:{required:[true, '请输入用户名或手机号']}, tipsPos:'abs'});
+  $('#password').vdsFieldChecker({rules:{required:[true, '请输入密码']}, tipsPos:'abs'});
+  if($('#captcha').size() > 0){
+    $('#captcha').vdsFieldChecker({rules: {required:[true, '请输入验证码']}, tipsPos:'abs'});
+  }
+  $('#login-form').vdsFormChecker({
+    beforeSubmit: function(){
+      vdsSetCipher('password', 'Verydows');
+      $(btn).addClass('disabled').text('正在登陆').prop('disabled', true);
+    }
+  });
+}
+
+function resetCaptcha(){
+  var src = "<{url c='api/captcha' a='image' v='random'}>";
+  $('#captcha-img').attr('src', src.replace('random', Math.random()));
+  $('#captcha').focus();
+}
+</script>
+</head>
+<body>
+<!-- 顶部开始 -->
+<{layout_topper common=$common}>
+<!-- 头部开始 -->
+<{layout_header common=$common}>
+<!-- 主体开始 -->
+<div class="login-container" style="margin-bottom: -24px">
+  <div class="container w1100">
+    <div class="wbox cut">
+      <div class="login-banner fl cut"><{layout_adv id='3'}></div>
+      <form method="post" action="<{url c='user' a='login' step='submit'}>" id="login-form">
+        <input type="password" value="" class="hide" />
+        <div class="login">
+          <div class="login-header">
+            <a class="act" href="<{url c='user' a='login'}>">用户登录</a>
+            <a href="<{url c='user' a='register'}>">注册会员</a>
+          </div>
+          <div class="login-body">
+            <dl class="username">
+              <dt><i class="fa fa-user"></i></dt>
+              <dd><input name="username" id="username" type="text" placeholder="请输入用户名或手机号" /></dd>
+            </dl>
+            <dl class="pwd">
+              <dt><i class="fa fa-lock"></i></dt>
+              <dd><input name="password" id="password" type="password" placeholder="请输入密码" /></dd>
+            </dl>
+            <div class="ck module mt20 cut" style="display: none" hidden>
+              <div class="fl">
+                <label>
+                <input name="stay" type="checkbox" checked value="1" />
+                  <font class="ml5">一周内自动登录</font>
+                </label>
+              </div>
+              <div class="fr"><a href="<{url c='retrieve' a='password'}>">忘记密码？</a></div>
+            </div>
+            <a class="form-submit aln-c" href="javascript:void(0)" onclick="login(this)">登录</a>
+            <div class="c999 mt20"><a class="ml5" href="<{url c='retrieve' a='password'}>">忘记密码？</a></div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- 主体结束 -->
+<!-- 页脚开始 -->
+<{layout_helper}>
+<{layout_footer}>
+<script type="text/javascript" src="<{$common.baseurl}>/public/script/md5.js"></script>
+</body>
+</html>

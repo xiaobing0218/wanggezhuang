@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <{include file='merchant/lib/meta.html'}>
+    <link rel="stylesheet" type="text/css" href="public/theme/backend/css/verydows.css"/>
+    <link rel="stylesheet" type="text/css" href="public/theme/backend/css/main.css"/>
+    <script type="text/javascript" src="public/script/jquery.js"></script>
+    <script type="text/javascript" src="public/theme/backend/js/verydows.js"></script>
+    <script type="text/javascript">
+
+        function submitForm() {
+            $('#passworda').vdsFieldChecker({rules: {required: [true, '请设置密码'], password: [true, '密码不符合格式要求']}});
+            $('#passwordb').vdsFieldChecker({rules: {required: [true, '请设置密码'], password: [true, '密码不符合格式要求']}});
+            $('#repassword').vdsFieldChecker({rules: {equal: [$('#passwordb').val(), '两次密码不一致']}});
+            $('form').vdsFormChecker();
+
+        }
+    </script>
+</head>
+<body>
+
+<div class="content">
+    <div class="loc"><h2><i class="icon"></i>修改密码</h2></div>
+    <form method="post" action="<{url m=$MOD c='pass' a='edit'}>">
+        <input type="hidden" name="token" value=""/>
+        <div class="box">
+            <div class="module">
+                <table class="dataform">
+                    <tr class="setpwd">
+                        <th>原始密码</th>
+                        <td><input class="w200 txt" name="passworda" id="passworda" type="password"/>
+                            <p class="c999 mt10">可以包含字母、数字以及特殊符号，长度为6-32个字符</p>
+                        </td>
+                    </tr>
+                    <tr class="setpwd">
+                        <th>新密码</th>
+                        <td><input class="w200 txt" name="passwordb" id="passwordb" type="password"/>
+                            <p class="c999 mt10">可以包含字母、数字以及特殊符号，长度为6-32个字符</p>
+                        </td>
+                    </tr>
+                    <tr class="setpwd">
+                        <th>确认密码</th>
+                        <td><input class="w200 txt" name="repassword" id="repassword" type="password"/></td>
+                    </tr>
+
+                </table>
+            </div>
+            <div class="submitbtn">
+                <button type="button" class="ubtn btn" onclick="submitForm()">保存并更新</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>

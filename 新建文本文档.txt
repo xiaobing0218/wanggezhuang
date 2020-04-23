@@ -1,0 +1,9 @@
+这是测试地址：
+前台：域名
+总后台：http://shop.aojiangshan.cn/index.php?m=backend&c=main&a=index
+用户名：admin
+密码：admin888
+商家后台：http://shop.aojiangshan.cn/index.php?m=merchant&c=main&a=index
+用户名：aojiangshan
+密码：123123
+

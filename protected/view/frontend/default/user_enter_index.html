@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="hx_baseurl" content="<{$common.baseurl}>">
+    <title>商家申请入驻 - <{$GLOBALS.cfg.site_name}></title>
+    <link rel="stylesheet" type="text/css" href="<{$common.theme}>/css/general.css"/>
+    <link rel="stylesheet" type="text/css" href="<{$common.theme}>/css/user.css"/>
+    <script type="text/javascript" src="<{$common.baseurl}>/public/script/jquery.js"></script>
+    <script type="text/javascript" src="<{$common.theme}>/js/general.js"></script>
+    <script type="text/javascript" src="<{$common.theme}>/js/consignee.js"></script>
+    <script src="<{$common.theme}>/js/dist/lrz.bundle.js"></script>
+    <script type="text/javascript">
+
+        function submitForm() {
+            $('#company_name').vdsFieldChecker({rules: {required: [true, '请输入公司名称'], maxlen: [60, '公司名称不能超过60个字符'],minlen:[4,'公司名称不合规']}});
+            $('#legal_name').vdsFieldChecker({rules: {required: [true, '请输入法人名称'], maxlen: [20, '法人名称不能超过20个字符'],minlen:[2,'法人名称不合规']}});
+            $('#contact').vdsFieldChecker({rules: {required: [true, '请输入联系方式'], maxlen: [100, '联系方式不能超过100个字符'],minlen:[8,'联系方式不合规']}});
+            $('#address').vdsFieldChecker({rules: {required: [true, '请输入公司地址'], maxlen: [100, '公司地址不能超过10个字符'],minlen:[8,'公司地址不合规']}});
+            $('form').vdsFormChecker();
+        }
+        function sumbies() {
+            if ($('#license_res').css('display')=='none'){
+                $('#license').css('display','none');
+                $('#license_res').css('display','')
+            }else {
+                $('#license').css('display','');
+                $('#license_res').css('display','none')
+            }
+        }
+
+    </script>
+</head>
+<body style="background-color: #f8f8f8">
+<!-- 顶部开始 -->
+<{layout_topper common=$common}>
+<!-- 顶部结束 -->
+<!-- 头部开始 -->
+<{layout_header common=$common}>
+<!-- 头部结束 -->
+<div class="loc w1100">
+    <div><a href="<{url c='main' a='index'}>">首页</a><b>></b><font>商家申请入驻</font></div>
+</div>
+<!-- 主体开始 -->
+<div class="container w1100 mt10">
+    <div class="module cut">
+        <!-- 左侧开始 -->
+        <div class="w180 fl cut">
+            <!-- 用户菜单开始 -->
+            <{layout_usermenu}>
+            <!-- 用户菜单结束 -->
+        </div>
+        <!-- 左侧结束 -->
+        <!-- 右侧开始 -->
+
+        <{if !empty($info)}>
+        <div class="w900">
+            <div class="consignee mcter">
+                <h2>商家申请入驻</h2>
+                <div class="consignee-form">
+                    <form method="post" id="consignee-form" action="<{url c='enter' a='add'}>" enctype="multipart/form-data">
+                        <div class="mcter cut" style="background: none;border: none;margin-left: 19%">
+                            <dl>
+                                <dt><label for="company_name">公司名称：</label></dt>
+                                <dd><input name="company_name" id="company_name" type="text" class="w400 txt" value="<{$info['company_name']}>" <{if ($info['status']!=2)}>readonly="readonly"<{/if}>/>
+                                </dd>
+                            </dl>
+                            <dl>
+                                <dt><label for="legal_name">法人姓名：</label></dt>
+                                <dd><input name="legal_name" id="legal_name"  type="text" class="w400 txt" value="<{$info['legal_name']}>" <{if ($info['status']!=2)}>readonly="readonly"<{/if}>/>
+                                </dd>
+                            </dl>
+                            <dl>
+                                <dt><label for="contact">联系方式：</label></dt>
+                                <dd><input name="contact"  type="text" id="contact" class="w400 txt" value="<{$info['contact']}>"  <{if ($info['status']!=2)}>readonly="readonly"<{/if}>/></dd>
+                            </dl>
+                            <dl>
+                                <dt><label for="address">营业地址：</label></dt>
+                                <dd><input name="address"  type="text" id="address" class="w400 txt" value="<{$info['address']}>"  <{if ($info['status']!=2)}>readonly="readonly"<{/if}>/></dd>
+                            </dl>
+                            <dl class="upsw pad5" >
+                                <dt class="pad5"><label for="mobile">营业执照：</label></dt>
+                                <dd class="mt5 pad5" id="license_res">
+                                    <div><label><img src="/<{$info['license']}>" style="height: 100px"></label></div>
+                                    <input type="hidden" value="<{$info['license']}>" name="src" id="src">
+                                </dd>
+                                <dd class="mt5 pad5" id="license" style="display: none;">
+                                    <div><label><input id="file" name="license" accept="image/*" type="file"/></label>
+                                        <p class="caaa mt10">仅允许上传 "png"、"jpg"、"jpeg" 类型的图片</p></div>
+                                    <div class="hide"><label><input title="URL" name="license_src" class="w500 txt" type="text"/></label></div>
+                                </dd>
+                                <{if ($info['status']==2)}>
+                                <a onclick="sumbies()">上传营业执照</a>
+                                <{/if}>
+                            </dl>
+                            <{if ($info['status']==2)}>
+
+
+                            <dl class="upsw pad5">
+                                <dl>
+                                    <dt><label for="address">拒绝理由：</label></dt>
+                                    <dd><input  type="text" class="w400 txt" value="<{$info['meta_description']}>"  readonly="readonly" style="border: none;background: rgb(250,250,250)"/></dd>
+                                </dl>
+                            </dl>
+
+                            <{/if}>
+                            <dl>
+                                <dt><label for="address"></label></dt>
+                                <dd><input type="text" class="w400 txt" value="<{if ($info['status']==0)}>入驻信息已提交成功，请耐心等待专员审核<{/if}>"  readonly="readonly" style="border: none;"/></dd>
+                            </dl>
+
+                            <{if ($info['status']==2)}>
+                            <div class="submit-btn mt10">
+                                <button type="button" class="sm-green" onclick="submitForm()">提交信息</button>
+                            </div>
+                            <{/if}>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- 右侧结束 -->
+        </div>
+        <{else}>
+
+        <div class="w900">
+            <div class="consignee mcter">
+                <h2>申请入驻</h2>
+                <div class="consignee-form">
+                    <form method="post" id="consignee-form" action="<{url c='enter' a='add'}>"
+                          enctype="multipart/form-data">
+                        <input type="hidden" name="id" value=""/>
+                        <div class="mcter cut"  style="background: none;border: none;margin-left: 19%">
+                            <dl>
+                                <dt><label for="company_name">公司名称：</label></dt>
+                                <dd><input name="company_name" id="company_name" type="text" class="w400 txt" value=""/>
+                                </dd>
+                            </dl>
+                            <dl>
+                                <dt><label for="legal_name">法人姓名：</label></dt>
+                                <dd><input name="legal_name" id="legal_name" type="text" class="w400 txt" value=""/>
+                                </dd>
+                            </dl>
+                            <dl>
+                                <dt><label for="contact">联系方式：</label></dt>
+                                <dd><input name="contact" id="contact" type="text" class="w400 txt" value=""/></dd>
+                            </dl>
+                            <dl>
+                                <dt><label for="address">营业地址：</label></dt>
+                                <dd><input name="address" id="address" type="text" class="w400 txt" value=""/></dd>
+                            </dl>
+                            <dl class="upsw pad5">
+                                <dt class="pad5"><label for="mobile">上传营业执照</label></dt>
+                                <dd class="mt5 pad5" id="license">
+                                    <div><label><input id="file" name="license" type="file"/></label>
+                                        <p class="caaa mt10">仅允许上传 "png"、"jpg"、"jpeg" 类型的图片</p></div>
+                                    <div class="hide"><label>
+                                        <input title="URL" name="license_src" class="w500 txt"
+                                                                    type="text"/>
+                                    </label></div>
+                                </dd>
+
+                            </dl>
+                            <div class="submit-btn mt10">
+                                <button type="button" class="sm-green" onclick="submitForm()">申请入驻</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- 右侧结束 -->
+        </div>
+        <{/if}>
+    </div>
+</div>
+<!-- 主体结束 -->
+<div class="cl"></div>
+<!-- 页脚开始 -->
+<{layout_helper}>
+<{layout_footer}>
+<!-- 页脚结束 -->
+<script type="text/javascript" src="<{$common.baseurl}>/public/script/juicer.js"></script>
+<script>
+    document.querySelector('#file').addEventListener('change', function () {
+        lrz(this.files[0])
+            .then(function (rst) {
+                // 处理成功会执行
+                console.log(rst);
+                var url="<{url c='enter' a='img'}>";
+                var data={img:rst.base64}
+                $.post(url,data,function (e) {
+                    console.log(e);
+                })
+            })
+            .catch(function (err) {
+                // 处理失败会执行
+            })
+            .always(function () {
+                // 不管是成功失败，都会执行
+            });
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <{include file='backend/lib/meta.html'}>
+    <link rel="stylesheet" type="text/css" href="public/theme/backend/css/verydows.css"/>
+    <link rel="stylesheet" type="text/css" href="public/theme/backend/css/main.css"/>
+    <script type="text/javascript" src="public/script/jquery.js"></script>
+    <script type="text/javascript" src="public/theme/backend/js/verydows.js"></script>
+
+
+    <script type="text/javascript">
+
+        function return_fun() {
+            window.location.href = "<{url m=$MOD c='application' a='index'}>";
+        }
+
+        function submitForm(obj) {
+            var status =  $('#status').val();
+            $('#status').vdsFieldChecker({rules:{required:[true, '请选择处理状态']}});
+            if (status == 2) {
+                $('#meta_description').vdsFieldChecker({
+                    rules: {
+                        required: [true, '审核详情不能为空'],
+                        maxlen: [300, '审核详情不能超过300个字符']
+                    }
+                });
+            }
+
+            $('form').vdsFormChecker();
+        }
+    </script>
+</head>
+<body>
+<div class="content">
+    <div class="loc"><h2><i class="icon"></i>申请入驻信息</h2></div>
+    <form method="post" action="<{url m=$MOD c='application' a='examine'}>">
+        <div class="box">
+            <div class="module">
+                <table class="dataform">
+                    <tr>
+                        <th width="110">公司名称</th>
+                        <td><{$info['company_name']}></td>
+                    </tr>
+                    <tr>
+                        <th width="110">公司法人</th>
+                        <td><{$info['legal_name']}></td>
+                    </tr>
+                    <tr>
+                        <th width="110">联系方式</th>
+                        <td><{$info['contact']}></td>
+                    </tr>
+                    <tr>
+                        <th width="110">公司地址</th>
+                        <td>
+                            <{$info['address']}>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th width="110">营业执照</th>
+                        <td>
+                            <a href="/<{$info.license}>" target="_blank"><img src="/<{$info.license}>" style="height: 100px"></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th width="110">申请人昵称</th>
+                        <td>
+                            <{if ($info.user_id.nickname)}><{$info.user_id.nickname}><{else}>未设置<{/if}>
+                        </td>
+                    </tr>
+                    <{if ($info.status=='0')}>
+                    <tr>
+                        <th width="110">处理状态</th>
+                        <td>
+                            <input type="hidden" name="id" id="id" value=" <{$info.id}>">
+                            <select id="status" name="status" class="slt">
+                                <option value="">选择处理状态</option>
+                                <option value="1">通过审核</option>
+                                <option value="2">拒绝审核</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <{/if}>
+                    <{if ($info.status!='1')}>
+
+                    <tr>
+                        <th width="110">审核详情</th>
+                        <td>
+                            <{if ($info.status=='0')}>
+                            <textarea class="txtarea" name="meta_description" id="meta_description" cols="75"
+                                      rows="3"></textarea>
+                            <{else}>
+                            <{$info.meta_description}>
+                            <{/if}>
+                        </td>
+                    </tr>
+                    <{/if}>
+                    <{if ($info.status!='0')}>
+
+                    <tr>
+                        <th width="110">审核结果</th>
+                        <td>
+                            <{if ($info.status=='1')}>
+                            审批成功
+                            <{/if}>
+                            <{ if ($info.status=='2')}>
+                            审批驳回
+                            <{/if}>
+                        </td>
+                    </tr>
+                    <{/if}>
+                </table>
+            </div>
+            <div class="submitbtn">
+                <button type="button" class="ubtn btn" onclick="return_fun()">返回</button>
+                <{if ($info.status=='0')}>
+                <button type="button" class="ubtn btn" onclick="submitForm()">提交</button>
+
+                <{/if}>
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+</html>

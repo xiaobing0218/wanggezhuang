@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <{include file='backend/lib/meta.html'}>
+    <link rel="stylesheet" type="text/css" href="public/theme/backend/css/verydows.css"/>
+    <link rel="stylesheet" type="text/css" href="public/theme/backend/css/main.css"/>
+    <script type="text/javascript" src="public/script/jquery.js"></script>
+    <script type="text/javascript" src="public/theme/backend/js/verydows.js"></script>
+    <script src="public/theme/frontend/default/js/dist/lrz.bundle.js"></script>
+    <script type="text/javascript">
+
+    </script>
+</head>
+<body>
+<div class="content">
+    <div class="loc"><h2><i class="icon"></i>预览商家:<font class="ml5">[<{$rs.user_id}>]</font></h2></div>
+    <form method="post" action="<{url m=$MOD c='merchant' a='edit' id=$rs.user_id step='submit'}>">
+        <input type="hidden" name="token" value="<{$token}>"/>
+        <div class="box">
+            <div class="module">
+                <table class="dataform">
+                    <tr>
+                        <th width="110">用户名</th>
+                        <td><{$rs.username}>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>联系人</th>
+                        <td><{$rs.full_name}></td>
+                    </tr>
+                    <tr>
+                        <th>联系电话</th>
+                        <td><{$rs.telephone}></td>
+                    </tr>
+                    <tr>
+                        <th>公司名称</th>
+                        <td><{$rs.company_name}></td>
+                    </tr>
+                    <tr>
+                        <th>公司简称</th>
+                        <td><{$rs.abbreviation}></td>
+                    </tr>
+                    <tr>
+                        <th>公司地址</th>
+                        <td><{$rs.address}></td>
+                    </tr>
+                    <tr>
+                        <th>上次登录日期</th>
+                        <td><p class="pad5 c999"><{date('Y-m-d h:i:s', $rs.last_date)}></p></td>
+                    </tr>
+                    <tr>
+                        <th>上次登录IP</th>
+                        <td><p class="pad5 c999"><{$rs.last_ip}></p></td>
+                    </tr>
+                    <tr>
+                        <th>创建日期</th>
+                        <td><p class="pad5 c999"><{date('Y-m-d h:i:s', $rs.created_date)}></p></td>
+                    </tr>
+                    <tr>
+                        <th>营业执照</th>
+                        <td>
+                            <img src="/<{$rs.license}>" style="max-width:300px" id="distinctions">
+
+                            <a target="_blank" title="查看图片" class="picflag icon ml5" href="/<{$rs.license}>" ></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>其他</th>
+                        <td>
+                            <div id="distinction">
+                                <{if ($rs['other'])}>
+                                <img src="/<{$rs.other}>" style="max-width:300px" >
+                                <a target="_blank" title="查看图片" class="picflag icon ml5" href="/<{$rs.other}>" ></a>
+                                <{else}>
+                                暂无
+                                <{/if}>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+    </form>
+</div>
+
+</body>
+<script>
+</script>
+</html>
